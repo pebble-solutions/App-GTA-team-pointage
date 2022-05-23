@@ -7,7 +7,8 @@ export default createStore({
 		login: null,
 		elements: [],
 		openedElement: null,
-		tmpElement: null
+		tmpElement: null,
+		personnels: []
 	},
 	getters: {
 		activeStructure(state) {
@@ -126,6 +127,10 @@ export default createStore({
 		 */
 		setStructureId(state, structureId) {
 			state.activeStructureId = structureId;
+		},
+
+		injectPersonnels(state, personnelList){
+			state.personnels = personnelList
 		}
 	},
 	actions: {

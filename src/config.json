@@ -1,21 +1,21 @@
 {
-    "name": "sample",
+    "name": "Au Comptoire Venitien",
     "cfg": {
-        "module": "sample",
-        "moduleLabel": "Sample module",
-        "aside": true,
+        "module": "resto_pointage",
+        "moduleLabel": "Pointage",
+        "aside": false,
         "app_mode": "default",
-        "ppp": "private",
+        "ppp": "partner",
         "logos": null
     },
     "cfgMenu": {
         "href": null
     },
     "cfgSlots": {
-        "menu": true,
-        "list": true,
+        "menu": false,
+        "list": false,
         "core": true,
-        "header": true
+        "header": false
     },
     "api": {
         "baseURL": "http://local.fe.tld/api/",

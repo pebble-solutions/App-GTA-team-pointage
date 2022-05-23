@@ -40,8 +40,9 @@
 
 		<template v-slot:menu>
 			<AppMenu>
-				<AppMenuItem href="/" look="dark" icon="bi bi-house">Accueil</AppMenuItem>
-				<AppMenuItem href="/about" look="dark" icon="bi bi-app">À propos</AppMenuItem>
+				<AppMenuItem href="/qrcode" look="dark" icon="bi bi-qr-code">QrCode</AppMenuItem>
+				<AppMenuItem href="/personnel-list" look="dark" icon="bi bi-qr-code">List du personnel</AppMenuItem>
+				<AppMenuItem href="/personnel-present" look="dark" icon="bi bi-qr-code">Personnel présent</AppMenuItem>
 			</AppMenu>
 		</template>
 
@@ -52,7 +53,7 @@
 		</template>
 
 		<template v-slot:core>
-			<div class="px-2 bg-light">
+			<div class="bg-light">
 				<router-view :cfg="cfg" v-if="isConnectedUser" />
 			</div>
 		</template>
@@ -140,7 +141,14 @@ export default {
 		AppWrapper,
 		AppMenu,
 		AppMenuItem
-	}
+	},
+
+	mounted() {
+		console.log(this.cfgSlots);
+		this.cfgSlots.menu = true;	
+		console.log(this.cfgSlots);
+	},
+	
 
 }
 </script>
