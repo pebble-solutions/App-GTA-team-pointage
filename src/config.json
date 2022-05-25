@@ -1,11 +1,11 @@
 {
-    "name": "Au Comptoire Venitien",
+    "name": "Smart pointage",
     "cfg": {
-        "module": "resto_pointage",
+        "module": "paie",
         "moduleLabel": "Pointage",
         "aside": false,
         "app_mode": "default",
-        "ppp": "partner",
+        "ppp": "public",
         "logos": null
     },
     "cfgMenu": {

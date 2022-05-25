@@ -41,8 +41,9 @@
 		<template v-slot:menu>
 			<AppMenu>
 				<AppMenuItem href="/qrcode" look="dark" icon="bi bi-qr-code">QrCode</AppMenuItem>
-				<AppMenuItem href="/personnel-list" look="dark" icon="bi bi-qr-code">List du personnel</AppMenuItem>
-				<AppMenuItem href="/personnel-present" look="dark" icon="bi bi-qr-code">Personnel présent</AppMenuItem>
+				<AppMenuItem href="/codepin" look="dark" icon="bi bi-unlock">Code Pin</AppMenuItem>
+				<AppMenuItem href="/personnel-list" look="dark" icon="bi bi-person-lines-fill">Tous le personnel</AppMenuItem>
+				<AppMenuItem href="/personnel-present" look="dark" icon="bi bi-person-check-fill">Equipe présente</AppMenuItem>
 			</AppMenu>
 		</template>
 
@@ -53,8 +54,8 @@
 		</template>
 
 		<template v-slot:core>
-			<div class="bg-light">
-				<router-view :cfg="cfg" v-if="isConnectedUser" />
+			<div class="bg-light" :style="'min-height:'+content_height+'px;'">
+				<router-view :cfg="cfg" :cfg-slots="cfgSlots" :structure="structure" @pin-change="pinChange" /> <!-- v-if="isConnectedUser"-->
 			</div>
 		</template>
 
@@ -81,12 +82,29 @@ export default {
 			pending: {
 				elements: true
 			},
-			isConnectedUser: false
+			isConnectedUser: false,
+			events: ['touch', 'touchList', 'scroll', 'load', 'click', 'mousemove', 'keypress'],
+			content_height: 0,
+			homeTimer : null,
+			structure: {
+				nom: "Au Comptoir Venitien",
+				font_family: "Cambria"
+			},
+			pin: null
 		}
 	},
 
 	computed: {
 		...mapState(['elements', 'openedElement'])
+	},
+
+	watch: {
+		pin(val) {
+			if (val) {
+				/** On redirige obligatoirement la route vers l'action de pointage */
+				this.$router.push('/Pointage.vue')
+			}
+		}
 	},
 
 	methods: {
@@ -134,6 +152,56 @@ export default {
 			this.listElements();
 		},
 
+		/**
+		 * set le timer a 1min une fois le timer fini , revoi vers la methods homeTimeOut()
+		 */
+		setHomeTimer() {
+			this.homeTimer = setTimeout(this.homeTimeOut, 60000);
+		},
+
+		/**
+		 * revoi vers la route (URL) de la home
+		 */
+		homeTimeOut() {
+			this.$router.push('/');
+		},
+
+		/**
+		 * vide et relance le timer
+		 */
+		resetHomeTimer() {
+			clearTimeout(this.homeTimer);
+
+			this.setHomeTimer();
+		},
+
+		/**
+		 * calcule la hauteur du core de l'application
+		 * 
+		 * @return {Number}
+		 */
+		calculateContentHeight() {
+			let header = document.getElementById('app-header');
+			let footer = document.getElementById('app-footer');
+
+			let header_height = header.offsetHeight;
+			let footer_height = footer.offsetHeight;
+
+			let win_height = window.innerHeight;
+
+			let content_height = win_height - header_height - footer_height - 40;
+
+			return content_height;
+		},
+
+		/**
+		 * Modifie le code pin du personnel enregistré
+		 * @param {Number} payload Code pin du personnel
+		 */
+		pinChange(payload) {
+			this.pin = payload;
+		},
+
 		...mapActions(['closeElement'])
 	},
 
@@ -144,11 +212,17 @@ export default {
 	},
 
 	mounted() {
-		console.log(this.cfgSlots);
-		this.cfgSlots.menu = true;	
-		console.log(this.cfgSlots);
-	},
-	
+		this.content_height = this.calculateContentHeight();
 
+		document.addEventListener('resize', () => {
+			this.content_height = this.calculateContentHeight();
+		});
+
+		this.events.forEach((event) => {
+			window.addEventListener(event, this.resetHomeTimer)
+		});
+
+		this.setHomeTimer();
+	},
 }
 </script>

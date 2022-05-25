@@ -1,23 +1,9 @@
 <template>
-    <div class="d-flex justify-content-center qrcode">
-        <img class="w-50" src="@/assets/Qrcode.png" alt="Qrcode pointage auto"/>
+    <div class="d-flex flex-column justify-content-center qrcode py-4">
+        <div class="w-100">
+            <h2>Scannez Moi</h2>
+    
+            <img class="w-25" src="@/assets/Qrcode.png" alt="Qrcode pointage auto"/>
+        </div>
     </div>
 </template>
-
-<style>
-    .qrcode {
-        padding : 80px 0px 80px 0px;
-    }
-</style>
-
-<!-- <script>
-import CONFIG from '@/config.json'
-
-export default {
-    beforeCreate() {
-        console.log(CONFIG);
-        console.log(CONFIG.cfgSlots);
-        CONFIG.cfgSlots.menu = true;
-    }
-}
-</script> -->

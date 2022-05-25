@@ -1,35 +1,57 @@
 <template>
-	<div v-if="$store.state.login">
-		<Carousel />
+	<div class="text-center d-flex justify-content-center align-items-center" >
+		<!-- <Carousel />
 
 		<div class="maskCarousel d-block w-100 h-100">
 
 		</div>
 
-		<div class="overCarousel w-75">
-			<h2 class="titleSize">Au Comptoire Venitien</h2>
+		<div class="overCarousel w-75"> -->
+		<div>
+			<h1 class="my-4 display-3" :style="'font-family:' + structure.font_family">{{structure.nom}}</h1> <!-- class="titleSize" -->
 
-			<div class="d-flex justify-content-evenly" style="margin-top: 400px;">
-				<button type="button" class="btn btn-outline-primary bg-white px-3 py-2 fs-1 button-size-custom" @click="$router.push({name: 'QrCode'})">
-					<i class="bi bi-qr-code pe-2"></i>
-					QrCode
-				</button>
+			<div class="card my-4">
+				<div class="card-body">
+					<h2 class="mb-3 display-6">Pointer</h2>
+					<div class="d-flex justify-content-center pb-4">
+						<router-link to="/qrcode" custom v-slot="{navigate, href}">
+							<a :href="href" class="btn btn-outline-primary p-4 d-flex flex-column mx-4 " @click="navigate">
+								<i class="bi bi-qr-code fs-1"></i>
+								<span class="fs-3">QrCode</span>
+							</a>
+						</router-link>
+		
+						<router-link to="/codepin" custom v-slot="{navigate, href}">
+							<a :href="href" class="btn btn-outline-primary p-4 d-flex flex-column" @click="navigate">
+								<i class="bi bi-unlock fs-1"></i>
+								<span class="fs-3">Code PIN</span>
+							</a>
+						</router-link>
+					</div>
+				</div>
+			</div>
 
-				<button type="button" class="btn btn-outline-primary bg-white px-3 py-2 fs-1 button-size-custom" @click="$router.push({name: 'PersonnelList'})">
-					<i class="bi bi-person-lines-fill pe-2 "></i>
-					Liste Personnel
-				</button>
-
-				<button type="button" class="btn btn-outline-primary bg-white px-3 py-2 fs-1 button-size-custom" @click="$router.push({name: 'PersonnelPresent'})">
-					<i class="bi bi-person-check-fill pe-2"></i>
-					Personnel Présent
-				</button>
-				
-				<!-- <button type="button" class="btn btn-primary" >
-					Planning
-				</button> -->
+			<div class="my-4">
+				<h2 class="mb-3 display-6">Équipe</h2>
+				<div class="d-flex justify-content-center align-items-center">
+					<router-link to="/personnel-list" custom v-slot="{navigate, href}">
+						<a :href="href" class="btn btn-outline-primary bg-white fs-6 mx-4" @click="navigate">
+							<i class="bi bi-person-lines-fill pe-2"></i>
+							Liste Personnel
+						</a>
+					</router-link>
+	
+					<router-link to="/personnel-present" custom v-slot="{navigate, href}">
+						<a :href="href" class="btn btn-outline-primary bg-white fs-6" @click="navigate">
+							<i class="bi bi-person-check-fill pe-2"></i>
+							Personnel Présent
+						</a>
+					</router-link>
+				</div>
 			</div>
 		</div>
+
+		<router-view/> <!-- v-if="isConnectedUser"-->
 	</div>
 </template>
 
@@ -52,8 +74,7 @@
 
 	.titleSize {
 		font-size: 100px;
-		/**Recup la font du resto */
-		font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+		margin-bottom: 50px;
 	}
 
 	.button-size-custom {
@@ -65,21 +86,30 @@
 <script>
 
 import {mapState} from 'vuex';
-import Carousel from '@/components/Carousel.vue';
+// import Carousel from '@/components/Carousel.vue';
 
 export default {
     name: "Home",
+
+	props: {
+		cfg: Object,
+		cfgSlots: Object,
+		structure: Object
+	},
+
     data() {
         return {
             pending: {
                 element: false
-            }
+            },
+			content_height: 0,
+			cfg_slots: null
         };
     },
 
-	components: { 
-		Carousel 
-	},
+	// components: { 
+	// 	Carousel 
+	// },
 
     computed: {
         ...mapState(["tmpElement"])
@@ -108,9 +138,12 @@ export default {
 	beforeMount() {
 		/**** call api get personnelListe */
 		// this.$store.commit('injectPeronnels', )
-	}
+	},
 
-
+	mounted() {
+		this.cfg_slots = this.cfgSlots;
+		this.cfg_slots.menu = false;
+	},
 
 }
 </script>

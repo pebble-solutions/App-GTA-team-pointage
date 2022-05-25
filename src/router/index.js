@@ -3,12 +3,24 @@ import Home from '../views/Home.vue'
 import QrCode from '../views/QrCode.vue'
 import PersonnelList from '../views/PersonnelList.vue'
 import PersonnelPresent from '../views/PersonnelPresent.vue'
+import CodePin from '../views/CodePin.vue'
+import Pointage from '../views/Pointage.vue'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    // children: [
+    //   {
+    //     path: 'pin',
+    //     component: () => import('../views/Pin.vue')
+    //   },
+    //   {
+    //     path: 'qrcode',
+    //     component: () => import('../views/QrCode.vue')
+    //   }
+    // ]
   },
   {
     path: '/qrcode',
@@ -24,6 +36,16 @@ const routes = [
     path: '/personnel-present',
     name: 'PersonnelPresent',
     component: PersonnelPresent
+  },
+  {
+    path: '/codepin',
+    name: 'CodePin',
+    component: CodePin
+  },
+  {
+    path: '/pointage',
+    name: 'Pointage',
+    component: Pointage
   },
   // {
   //   path: '/about',

@@ -11,6 +11,7 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item d-flex">
                 <img class="w-25 rounded-circle border border-dark" src="@/assets/profilePict.png" alt="profile picture"/>
+                <b-avatar variant="info" src="https://placekitten.com/300/300"></b-avatar>
                 <div class="d-flex flex-column ps-4 pt-2">
                     <h3>{{data.fullname}}</h3>
                     <p class="m-0">{{data.poste}}</p>
