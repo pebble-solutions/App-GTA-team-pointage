@@ -3,8 +3,8 @@ import Home from '../views/Home.vue'
 import QrCode from '../views/QrCode.vue'
 import PersonnelList from '../views/PersonnelList.vue'
 import PersonnelPresent from '../views/PersonnelPresent.vue'
-import CodePin from '../views/CodePin.vue'
 import Pointage from '../views/Pointage.vue'
+import GoodBye from '../views/Goodbye.vue'
 
 const routes = [
   {
@@ -28,9 +28,16 @@ const routes = [
     component: QrCode
   },
   {
-    path: '/personnel-list',
+    path: '/personnel',
     name: 'PersonnelList',
-    component: PersonnelList
+    component: PersonnelList,
+    children: [
+      {
+        path: '/personnel/pin/:id',
+        name: 'ClockByPin',
+        component: () => import('../views/CodePin.vue')
+      },
+    ]
   },
   {
     path: '/personnel-present',
@@ -38,15 +45,23 @@ const routes = [
     component: PersonnelPresent
   },
   {
-    path: '/codepin',
-    name: 'CodePin',
-    component: CodePin
+    path: '/pointage/:id',
+    name: 'Pointage',
+    component: Pointage,
+    children: [
+      {
+        path: '/summary',
+        name: 'Summary',
+        component: () => import('../views/Summary.vue')
+      },
+    ]
   },
   {
-    path: '/pointage',
-    name: 'Pointage',
-    component: Pointage
+    path: '/goodbye',
+    name: 'Goodbye',
+    component: GoodBye
   },
+
   // {
   //   path: '/about',
   //   name: 'À propos',

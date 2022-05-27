@@ -55,7 +55,7 @@
 
 		<template v-slot:core>
 			<div class="bg-light" :style="'min-height:'+content_height+'px;'">
-				<router-view :cfg="cfg" :cfg-slots="cfgSlots" :structure="structure" @pin-change="pinChange" /> <!-- v-if="isConnectedUser"-->
+				<router-view :cfg="cfg" :cfg-slots="cfgSlots" :structure="structure" @pin-change="pinChange" :payload="payload" @transfer-payload="updatePayload" /> <!-- v-if="isConnectedUser"-->
 			</div>
 		</template>
 
@@ -87,10 +87,11 @@ export default {
 			content_height: 0,
 			homeTimer : null,
 			structure: {
-				nom: "Au Comptoir Venitien",
+				nom: "Au Comptoir Vénitien",
 				font_family: "Cambria"
 			},
-			pin: null
+			pin: null,
+			payload: null
 		}
 	},
 
@@ -200,6 +201,14 @@ export default {
 		 */
 		pinChange(payload) {
 			this.pin = payload;
+		},
+
+		/**
+		 * Met à jour la clé payload en fonction des informations héritées depuis les enfants
+		 * @param {Mixed} payload Le payload à transférer
+		 */
+		updatePayload(payload) {
+			this.payload = payload;
 		},
 
 		...mapActions(['closeElement'])

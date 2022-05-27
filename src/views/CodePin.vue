@@ -1,22 +1,24 @@
 <template>
-    <div class="d-flex flex-column justify-content-center align-items-center">
-        <label class="fs-1 my-3">Saisiser votre code pin</label>
-        
-        <div v-if="pinError" class="alert alert-danger text-center w-50" role="alert">
-            Code Pin invalide
-        </div>
+    <AppModal id="clockByPin" title="Démarrer mon pointage" :footer="false" @modal-hide="routeToList()">
+        <div class="text-center">
+            <div v-if="personnel.clock_status=='over'" class="alert alert-warning text-center" role="alert">
+                Vous avez déjà une période déclarée aujourd'hui, la saisie du code pin déclenchera une nouvelle période de travail.
+            </div>
+            <div v-if="pinError" class="alert alert-danger text-center" role="alert">
+                Code Pin invalide
+            </div>
 
-        <div v-if="pinValide" class="alert alert-success text-center w-50" role="success">
-            Code Pin valide
+            <h3 class="fs-1">{{personnel.cache_nom}}</h3>
+            <label class="fs-3 mb-4">Saisiser votre code pin</label>
+            
+            <div class="my-4 d-flex justify-content-center">
+                <input type="number" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin1" :style="{'border-success': pinValide, 'border-danger': pinError}">
+                <input type="number" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin2" :style="{'border-success': pinValide, 'border-danger': pinError}">
+                <input type="number" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin3" :style="{'border-success': pinValide, 'border-danger': pinError}">
+                <input type="number" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin4" :style="{'border-success': pinValide, 'border-danger': pinError}">
+            </div>
         </div>
-
-        <div class="my-4">
-            <input type="number" class="pincode-input mx-2 secretNum" v-model="pinCode.pin1">
-            <input type="number" class="pincode-input mx-2 secretNum" v-model="pinCode.pin2">
-            <input type="number" class="pincode-input mx-2 secretNum" v-model="pinCode.pin3">
-            <input type="number" class="pincode-input mx-2 secretNum" v-model="pinCode.pin4">
-        </div>
-    </div>
+    </AppModal>
 </template>
 
 <style>
@@ -24,8 +26,6 @@
         width: 50px;
         height: 50px;
         line-height: 50px;
-        border-radius: 3px;
-        border: 2px solid grey;
         text-align: center;
         font-size: 1.5rem;
     }
@@ -38,7 +38,13 @@
 
 <script>
 
+import AppModal from '@/components/pebble-ui/AppModal.vue'
+
 export default {
+    props: {
+        personnelList: Array
+    },
+    
     data() {
         return {
             pinCode : {
@@ -48,61 +54,87 @@ export default {
                 pin4 : null
             },
             pinError : false,
-            pinValide : false,
-            personnelPinValide: [
-                '1234',
-                '4567',
-                '7899'
-            ]
+            pinValide : false
+        }
+    },
+
+    components: {
+        AppModal
+    },
+
+    computed: {
+        /**
+         * Retourne l'objet représentant le personnel passé en url depuis son ID
+         * @return {Object}
+         */
+        personnel() {
+            let personnelId = this.$route.params.id;
+            let personnel = this.personnelList.find((e) => e.id == personnelId);
+            return personnel;
+        }
+    },
+
+    methods: {
+        /**
+         * Redirige le router vers la vue de liste du personnel
+         */
+        routeToList() {
+            this.$router.push({name: 'PersonnelList'});
+        },
+
+        /**
+         * Recupere les inputs du code pin
+         * block les utilisateurs a pouvoir mettre que un nombre dans le input avec le focus next
+         * Si codePin mauvais, message d'error sinon passe au pointage 
+         */
+        displayCodePin() {
+            let inputs = document.querySelectorAll(".pincode-input");
+
+            inputs.forEach((input, index) => {
+                if (index === 0) {
+                    input.focus();
+                }
+
+                input.addEventListener("input", () => {
+                    if(this.pinCode.pin1.toString().length > 0) {
+                        if(inputs.length -1 == index) {
+                            let pin = '';
+                            
+                            for( let pinNumber in this.pinCode) {
+                                pin += this.pinCode[pinNumber];
+                            }
+
+                            this.$app.apiPost('structurePersonnel/POST/'+this.personnel.id+'/clockByPin', {
+                                pin
+                            })
+                            .then((data) => {
+                                this.$emit('pin-validate', data);
+                                this.$router.push({name : 'Pointage', params : {id: data.id}});
+                            })
+                            .catch(() => {
+                                let refPinCode = {
+                                    pin1: null,
+                                    pin2: null,
+                                    pin3: null,
+                                    pin4: null
+                                }
+
+                                this.pinError = true;
+
+                                this.pinCode = refPinCode;
+                                inputs[0].focus();
+                            });
+                        } else {
+                            input.nextElementSibling.focus();                   
+                        }
+                    }
+                });
+            });
         }
     },
 
     mounted() {
-        let inputs = document.querySelectorAll(".pincode-input");
-
-        inputs.forEach((input, index) => {
-            input.addEventListener("input", () => {
-                if(this.pinCode.pin1.toString().length > 0) {
-                    if(inputs.length -1 == index) {
-                        let pin = '';
-                        
-                        for( let pinNumber in this.pinCode) {
-                            pin += this.pinCode[pinNumber];
-                        }
-
-                        let checkPin = this.personnelPinValide.find((pinV) => pinV == pin);
-
-                        if(checkPin){
-                            this.pinError = false;
-                            this.pinValide = true;
-
-                            input.blur();
-
-                            setTimeout(() => {
-                                this.$router.push('/pointage');
-                            }, 1500);
-                        } else {
-                            /**** VOIR AVEC GUILLAUME SI IL Y A UNE MEILLEURE FACON DE FAIRE */
-                            let refPinCode = {
-                                pin1: null,
-                                pin2: null,
-                                pin3: null,
-                                pin4: null
-                            }
-
-                            this.pinError = true;
-
-                            this.pinCode = refPinCode;
-                            inputs[0].focus();
-                        }
-                    } else {
-                        input.nextElementSibling.focus();                   
-                    }
-                }
-            });
-        });
-
-
+        this.displayCodePin();
     }
 }
 </script>

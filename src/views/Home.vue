@@ -1,87 +1,41 @@
 <template>
-	<div class="text-center d-flex justify-content-center align-items-center" >
-		<!-- <Carousel />
-
-		<div class="maskCarousel d-block w-100 h-100">
-
-		</div>
-
-		<div class="overCarousel w-75"> -->
+	<div class="d-flex flex-column justify-content-around p-1" >
 		<div>
-			<h1 class="my-4 display-3" :style="'font-family:' + structure.font_family">{{structure.nom}}</h1> <!-- class="titleSize" -->
+			<h1 class="card-title text-center m-4 p-5" :style="'font-family:' + structure.font_family">{{structure.nom}}</h1>
 
-			<div class="card my-4">
+			<!-- <div class="card my-4">
 				<div class="card-body">
-					<h2 class="mb-3 display-6">Pointer</h2>
-					<div class="d-flex justify-content-center pb-4">
-						<router-link to="/qrcode" custom v-slot="{navigate, href}">
-							<a :href="href" class="btn btn-outline-primary p-4 d-flex flex-column mx-4 " @click="navigate">
-								<i class="bi bi-qr-code fs-1"></i>
-								<span class="fs-3">QrCode</span>
+					<h2 class="mb-3 display-6">Gestion de l'équipe</h2> -->
+
+					<div class="row m-4 justify-content-center p-5">
+						<router-link :to="{name: 'PersonnelList'}" custom v-slot="{navigate, href}">
+							<a :href="href" class="btn btn-outline-primary col-3 m-2" @click="navigate">
+								<i class="bi bi-person-lines-fill fs-1 d-block"></i>
+								<span class="fs-2">Pointer</span>
 							</a>
 						</router-link>
-		
-						<router-link to="/codepin" custom v-slot="{navigate, href}">
-							<a :href="href" class="btn btn-outline-primary p-4 d-flex flex-column" @click="navigate">
-								<i class="bi bi-unlock fs-1"></i>
-								<span class="fs-3">Code PIN</span>
+
+                        <!--Bouton QR code commenté pour le moment
+                        <router-link to="/qrcode" custom v-slot="{navigate, href}">
+                            <a :href="href" class="btn btn-outline-primary col-2 m-2" @click="navigate">
+                                <div><i class="bi bi-qr-code fs-1"></i></div>
+                                <div class="fs-2">QR Code</div>
+                            </a>
+                        </router-link>
+                        fin de bouton QR code commenté-->
+
+						<router-link to="/personnel-present" custom v-slot="{navigate, href}">
+							<a :href="href" class="btn btn-outline-primary col-3 m-2" @click="navigate">
+								<i class="bi bi-person-check-fill fs-1 d-block"></i>
+								<span class="fs-2">Équipe présente</span>
 							</a>
 						</router-link>
 					</div>
-				</div>
-			</div>
-
-			<div class="my-4">
-				<h2 class="mb-3 display-6">Équipe</h2>
-				<div class="d-flex justify-content-center align-items-center">
-					<router-link to="/personnel-list" custom v-slot="{navigate, href}">
-						<a :href="href" class="btn btn-outline-primary bg-white fs-6 mx-4" @click="navigate">
-							<i class="bi bi-person-lines-fill pe-2"></i>
-							Liste Personnel
-						</a>
-					</router-link>
-	
-					<router-link to="/personnel-present" custom v-slot="{navigate, href}">
-						<a :href="href" class="btn btn-outline-primary bg-white fs-6" @click="navigate">
-							<i class="bi bi-person-check-fill pe-2"></i>
-							Personnel Présent
-						</a>
-					</router-link>
-				</div>
-			</div>
+				<!-- </div>
+			</div> -->
 		</div>
-
-		<router-view/> <!-- v-if="isConnectedUser"-->
 	</div>
 </template>
-
-<style>
-	.maskCarousel {
-		background-color: rgb(0,0,0,0.7);
-		position: absolute;
-		top: 0px;
-		left: 0px;
-	}
-
-	.overCarousel {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		color: white;
-		transform: translate(-50%,-50%);
-		text-align: center;
-	}
-
-	.titleSize {
-		font-size: 100px;
-		margin-bottom: 50px;
-	}
-
-	.button-size-custom {
-		width: 450px;
-		height: 80px;
-	}
-</style>
 
 <script>
 
