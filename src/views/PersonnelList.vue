@@ -1,6 +1,12 @@
 <template>
-    <div>
-        <h2 class="py-4 text-center">Sélectionnez votre personnel</h2>
+    <div v-if="pending.personnel" class="text-center text-secondary py-4">
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="fs-4">Chargement en cours...</div>
+    </div>
+    <div v-else>
+        <h2 class="py-4 text-center">Sélectionnez votre profil</h2>
 
         <div class="d-flex justify-content-start flex-wrap px-4">
             <div style="width: 25%;" v-for="personnel in personnelList" :key="'personnel-'+ personnel.id">
@@ -13,7 +19,7 @@
         </div>
     </div>
 
-    <router-view :personnel-list="personnelList" @pin-validate="pinValidate"></router-view>
+    <router-view :personnel-list="personnelList" @pin-validate="pinValidate" @pin-change="pinChange"></router-view>
 </template>
 
 <script>
@@ -41,6 +47,14 @@ export default {
          */
         pinValidate(payload) {
             this.$emit('transfer-payload', payload);
+        },
+
+        /**
+         * Transmet le code pin saisis au composant parent
+         * @param {Number} pin Le code pin
+         */
+        pinChange(pin) {
+            this.$emit('pin-change', pin);
         }
     },
 

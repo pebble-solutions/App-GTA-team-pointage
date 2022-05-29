@@ -1,13 +1,13 @@
 <template>
-	<div class="d-flex flex-column justify-content-around p-1" >
+	<div class="d-flex flex-column justify-content-around py-4" >
 		<div>
-			<h1 class="card-title text-center m-4 p-5" :style="'font-family:' + structure.font_family">{{structure.nom}}</h1>
+			<h1 class="card-title text-center my-4">{{structure.nom}}</h1>
 
 			<!-- <div class="card my-4">
 				<div class="card-body">
 					<h2 class="mb-3 display-6">Gestion de l'équipe</h2> -->
 
-					<div class="row m-4 justify-content-center p-5">
+					<div class="text-center my-4">
 						<router-link :to="{name: 'PersonnelList'}" custom v-slot="{navigate, href}">
 							<a :href="href" class="btn btn-outline-primary col-3 m-2" @click="navigate">
 								<i class="bi bi-person-lines-fill fs-1 d-block"></i>
@@ -24,12 +24,12 @@
                         </router-link>
                         fin de bouton QR code commenté-->
 
-						<router-link to="/personnel-present" custom v-slot="{navigate, href}">
+						<!--<router-link to="/personnel-present" custom v-slot="{navigate, href}">
 							<a :href="href" class="btn btn-outline-primary col-3 m-2" @click="navigate">
 								<i class="bi bi-person-check-fill fs-1 d-block"></i>
 								<span class="fs-2">Équipe présente</span>
 							</a>
-						</router-link>
+						</router-link>-->
 					</div>
 				<!-- </div>
 			</div> -->

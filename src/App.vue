@@ -8,35 +8,6 @@
 		@auth-change="setLocal_user"
 		@structure-change="switchStructure">
 
-		<template v-slot:header>
-			<div class="mx-2 d-flex align-items-center" v-if="openedElement">
-				<router-link to="/" custom v-slot="{ navigate, href }">
-					<a class="btn btn-dark me-2" :href="href" @click="navigate">
-						<i class="bi bi-arrow-left"></i>
-					</a>
-				</router-link>
-				<router-link :to="'/element/'+openedElement.id+'/properties'" custom v-slot="{ navigate, href }">
-					<a class="btn btn-dark me-2" :href="href" @click="navigate">
-						<i class="bi bi-file-earmark me-1"></i>
-						{{openedElement.name}}
-					</a>
-				</router-link>
-
-				<div class="dropdown">
-					<button class="btn btn-dark dropdown-toggle" type="button" id="fileDdMenu" data-bs-toggle="dropdown" aria-expanded="false">
-						Fichier
-					</button>
-					<ul class="dropdown-menu" aria-labelledby="fileDdMenu">
-						<li>
-							<router-link :to="'/element/'+openedElement.id+'/informations'" custom v-slot="{ navigate, href }">
-								<a class="dropdown-item" :href="href" @click="navigate">Informations</a>
-							</router-link>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</template>
-
 
 		<template v-slot:menu>
 			<AppMenu>
@@ -54,8 +25,15 @@
 		</template>
 
 		<template v-slot:core>
-			<div class="bg-light" :style="'min-height:'+content_height+'px;'">
-				<router-view :cfg="cfg" :cfg-slots="cfgSlots" :structure="structure" @pin-change="pinChange" :payload="payload" @transfer-payload="updatePayload" /> <!-- v-if="isConnectedUser"-->
+			<div class="bg-light px-3">
+				<router-view 
+					:cfg="cfg" 
+					:cfg-slots="cfgSlots" 
+					:structure="structure" 
+					@pin-change="pinChange" 
+					:payload="payload" 
+					:pin="pin"
+					@transfer-payload="updatePayload" /> <!-- v-if="isConnectedUser"-->
 			</div>
 		</template>
 
@@ -99,14 +77,14 @@ export default {
 		...mapState(['elements', 'openedElement'])
 	},
 
-	watch: {
-		pin(val) {
-			if (val) {
-				/** On redirige obligatoirement la route vers l'action de pointage */
-				this.$router.push('/Pointage.vue')
-			}
-		}
-	},
+	// watch: {
+	// 	pin(val) {
+	// 		if (val) {
+	// 			/** On redirige obligatoirement la route vers l'action de pointage */
+	// 			this.$router.push('/Pointage.vue')
+	// 		}
+	// 	}
+	// },
 
 	methods: {
 		/**

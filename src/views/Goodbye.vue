@@ -4,6 +4,8 @@
 
         <div class="text-center">
             <h2 class="display-3">Bonne Journée</h2>
+
+            <p>Vos informations de pointage on été enregistrées.</p>
             
             <router-link to="/" custom v-slot="{navigate, href}">
                 <a :href="href" class="btn btn-outline-secondary" @click="navigate">Retour</a>

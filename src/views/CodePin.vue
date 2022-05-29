@@ -1,8 +1,9 @@
 <template>
     <AppModal id="clockByPin" title="Démarrer mon pointage" :footer="false" @modal-hide="routeToList()">
         <div class="text-center">
-            <div v-if="personnel.clock_status=='over'" class="alert alert-warning text-center" role="alert">
-                Vous avez déjà une période déclarée aujourd'hui, la saisie du code pin déclenchera une nouvelle période de travail.
+            <div v-if="personnel.clock_status=='over'" class="alert alert-warning text-start d-flex align-items-center" role="alert">
+                <i class="bi bi-exclamation-triangle me-3 fs-4"></i>
+                <span class="text-left">Vous avez déjà une période déclarée aujourd'hui, la saisie du code pin déclenchera une nouvelle période de travail.</span>
             </div>
             <div v-if="pinError" class="alert alert-danger text-center" role="alert">
                 Code Pin invalide
@@ -12,10 +13,10 @@
             <label class="fs-3 mb-4">Saisiser votre code pin</label>
             
             <div class="my-4 d-flex justify-content-center">
-                <input type="number" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin1" :style="{'border-success': pinValide, 'border-danger': pinError}">
-                <input type="number" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin2" :style="{'border-success': pinValide, 'border-danger': pinError}">
-                <input type="number" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin3" :style="{'border-success': pinValide, 'border-danger': pinError}">
-                <input type="number" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin4" :style="{'border-success': pinValide, 'border-danger': pinError}">
+                <input type="text" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin1" :style="{'border-success': pinValide, 'border-danger': pinError}">
+                <input type="text" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin2" :style="{'border-success': pinValide, 'border-danger': pinError}">
+                <input type="text" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin3" :style="{'border-success': pinValide, 'border-danger': pinError}">
+                <input type="text" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin4" :style="{'border-success': pinValide, 'border-danger': pinError}">
             </div>
         </div>
     </AppModal>
@@ -109,7 +110,9 @@ export default {
                             })
                             .then((data) => {
                                 this.$emit('pin-validate', data);
+                                this.$emit('pin-change', pin);
                                 this.$router.push({name : 'Pointage', params : {id: data.id}});
+                                this.pinValide = true;
                             })
                             .catch(() => {
                                 let refPinCode = {

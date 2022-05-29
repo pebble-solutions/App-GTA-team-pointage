@@ -1,6 +1,5 @@
 <template>
-    <div class="card mb-3 mx-4 shadow"
-        style="font-size:2rem;"
+    <div class="card mb-3 mx-3 shadow"
         :class="{
             'border-success': data.clock_status == 'over',
             'border-warning': data.clock_status == 'open',
@@ -8,7 +7,7 @@
         }">
         <ul class="list-group list-group-flush">
             <li class="list-group-item text-center">
-                <h3>{{displayName(data.cache_nom)}}</h3>
+                <h3 class="my-0">{{displayName(data.cache_nom)}}</h3>
             </li>
 
             <li class="list-group-item text-center border-top"
@@ -19,13 +18,13 @@
                 }" 
                 :style="backgroundColorStyle()">
                 <div class="d-flex align-items-center justify-content-center">
-                    <span v-if="data.clock_status" class="fs-4 pe-1">{{displayTime(data.oStructureTempsDeclaration.dd)}}</span> 
+                    <span v-if="data.clock_status">{{displayTime(data.oStructureTempsDeclaration.dd)}}</span> 
                 
-                    <i class="bi bi-chevron-compact-right" v-if="data.clock_status == 'over' || data.clock_status== 'open'"></i> 
+                    <i class="bi bi-chevron-compact-right mx-2" v-if="data.clock_status == 'over' || data.clock_status== 'open'"></i> 
                     <span v-else>-</span>
 
-                    <span class="ps-1 fs-4" v-if="data.clock_status == 'open'" >En Cours</span>
-                    <span v-if="data.clock_status == 'over'" class="fs-4">{{displayTime(data.oStructureTempsDeclaration.df)}}</span>
+                    <span v-if="data.clock_status == 'open'" >En Cours</span>
+                    <span v-if="data.clock_status == 'over'">{{displayTime(data.oStructureTempsDeclaration.df)}}</span>
                 </div>
             </li>
         </ul>

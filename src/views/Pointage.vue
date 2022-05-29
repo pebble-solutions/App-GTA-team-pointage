@@ -1,30 +1,31 @@
 <template>
-    <div class="d-flex flex-column justify-content-center align-items-center" v-if="personnel">
-        <i v-if="personnel.clock_status == 'open'" class="bi bi-check-circle-fill text-success" style="font-size: 150px;"></i>
+    <div class="text-center py-2" v-if="personnel">
+        <div v-if="personnel.clock_status == 'open'">
+            <i class="bi bi-check-circle-fill text-success" style="font-size: 150px;"></i>
+            <div class="text-success text-center">Votre pointage est ouvert.    </div>
+        </div>
 
         <h1 class="display-3">{{displayDate('date')}}</h1>
 
-        <div class="d-flex justify-content-center align-items-baseline">
-            <div class="pe-3">
-                <span class="fs-2" v-if="personnel.clock_status == 'open'" >Début :</span>
-                <span class="fs-2" v-else>Fin :</span>
-            </div>
+        <div class="fs-2">
+            <span class="fs-2" v-if="personnel.clock_status == 'open'" >Début : </span>
+            <span class="fs-2" v-else>Fin : </span>
     
-            <span class="fs-1">{{displayDate('time')}}</span>
+            <strong>{{displayDate('time')}}</strong>
         </div>
 
-        <div  v-if="personnel.clock_status=='over' && personnel.oStructureTempsDeclaration.gta_codages">
-            <div v-for="question in personnel.oStructureTempsDeclaration.gta_codages" :key="'question-' + question.id">
-                <div class="card my-3" v-if="question.public_label">
+        <div  v-if="personnel.clock_status == 'over' && personnel.oStructureTempsDeclaration.gta_codages">
+            <div v-for="gtaCodage in personnel.oStructureTempsDeclaration.gta_codages" :key="'gtaCodage-' + gtaCodage.id">
+                <div class="card my-3" v-if="gtaCodage.saisie_personnel === 'OUI'">
                     <div class="card-body" >
                         <div class="text-center">
-                            <h2 class="mb-4">{{question.public_label}}</h2>
+                            <h2 class="mb-4">{{gtaCodage.public_label}}</h2>
                 
-                            <button type="button" class="btn btn-success me-2 w-25" @click="actionBtnPointage('valider')">
+                            <button type="button" class="btn mx-2 w-25" @click="actionBtnPointage(gtaCodage, true)" :class="btnClass(gtaCodage, 'success')">
                                 <i class="bi bi-check-lg"></i>
                             </button>
         
-                            <button type="button" class="btn btn-danger w-25" @click="actionBtnPointage('cancel')">
+                            <button type="button" class="btn mx-2 w-25" @click="actionBtnPointage(gtaCodage, false)" :class="btnClass(gtaCodage, 'danger')">
                                 <i class="bi bi-x-lg"></i>
                             </button>
                         </div>
@@ -43,14 +44,11 @@
         </div>
 
         <div v-if="personnel.clock_status == 'over'" class="mt-5 mb-4">
-            <router-link :to="{name: 'Summary'}" custom v-slot="{navigate, href}">
-                <a :href="href" @click="navigate" class="btn btn-primary fs-3 px-4" :class="{'disabled': !canValidated}" role="button" :aria-disabled="!canValidated">
-                    Valider
-                </a>
-            </router-link>
+            <button @click.prevent="validateGta()" class="btn btn-primary btn-lg" :disabled="!formReady || pending.validate">
+                <span v-if="pending.validate">En cours...</span>
+                <span v-else>Valider</span>
+            </button>
         </div>
-
-        <router-view :pointage="pointage"/>        
     </div>
 </template>
 
@@ -59,13 +57,16 @@
 export default {  
 
     props: {
-        payload: Object
+        payload: Object,
+        pin: Number
     },
 
     data() {
         return {
-            canValidated : false,
-            question: []
+            gtaDeclarations: [],
+            pending: {
+                validate: false
+            }
         }
     },
 
@@ -73,15 +74,61 @@ export default {
         personnel() {
             return this.payload;
         },
+
+        /**
+         * Retourne true si le formulaire est prêt.
+         * @returns {Boolean}
+         */
+        formReady() {
+            let codages = this.personnel.oStructureTempsDeclaration.gta_codages.filter(e => e.saisie_personnel === 'OUI');
+            let status = codages.length == this.gtaDeclarations.length;
+            return status;
+        }
     },
 
     methods: {
-        actionBtnPointage(action){
-            console.log(action)
-            if(action == 'validate'){
-                // this.$router.push("/summary");
-            } else {
-                // this.$router.push("/summary");
+        /**
+         * Met à jour les informations du codage
+         * 
+         * @param {Object} gtaCodage Les informations concernant le codage
+         * @param {Number} value La valeur à enregistrer
+         */
+        actionBtnPointage(gtaCodage, value){
+            let declaration;
+
+            let found = this.gtaDeclarations.find(e => e.gta__codage_id == gtaCodage.id);
+            if (found) {
+                declaration = found;
+            }
+            else {
+                declaration = {
+                    gta__codage_id: gtaCodage.id
+                };
+
+                this.gtaDeclarations.push(declaration);
+            }
+
+            declaration.qte = value;
+        },
+
+        /**
+         * Retourne la classe à affecter à un bouton en fonction de la valeur d'une déclaration
+         * @param {Object} gtaCodage Les informations du codage
+         * @param {String} type Le type de bouton
+         */
+        btnClass(gtaCodage, type) {
+            let declaration = this.gtaDeclarations.find(e => e.gta__codage_id == gtaCodage.id);
+            if (!declaration) {
+                return 'btn-outline-'+type;
+            }
+
+            else {
+                if ((!declaration.qte && type == 'success') || (declaration.qte && type == 'danger')) {
+                    return 'btn-outline-'+type;
+                }
+                else {
+                    return 'btn-'+type;
+                }
             }
         },
         
@@ -124,6 +171,27 @@ export default {
             } else {
                 return newDate.toLocaleTimeString('fr-FR', timeFormat);
             }
+        },
+
+
+        /**
+         * Envoie une demande de validation du pointage
+         */
+        validateGta()
+        {
+            let declarations = JSON.stringify(this.gtaDeclarations);
+
+            this.pending.validate = true;
+
+            this.$app.apiPost('structurePersonnel/POST/'+this.personnel.id+'/clockByPin', {
+                pin: this.pin,
+                gta_declarations: declarations
+            })
+            .then((data) => {
+                this.$emit('transfer-payload', data);
+                this.$router.push({name : 'Goodbye'});
+            })
+            .catch(this.$app.catchError);
         }
     },
 }
