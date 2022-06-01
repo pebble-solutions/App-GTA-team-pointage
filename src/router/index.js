@@ -47,14 +47,7 @@ const routes = [
   {
     path: '/pointage/:id',
     name: 'Pointage',
-    component: Pointage,
-    children: [
-      {
-        path: '/summary',
-        name: 'Summary',
-        component: () => import('../views/Summary.vue')
-      },
-    ]
+    component: Pointage
   },
   {
     path: '/goodbye',

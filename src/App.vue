@@ -8,16 +8,6 @@
 		@auth-change="setLocal_user"
 		@structure-change="switchStructure">
 
-
-		<template v-slot:menu>
-			<AppMenu>
-				<AppMenuItem href="/qrcode" look="dark" icon="bi bi-qr-code">QrCode</AppMenuItem>
-				<AppMenuItem href="/codepin" look="dark" icon="bi bi-unlock">Code Pin</AppMenuItem>
-				<AppMenuItem href="/personnel-list" look="dark" icon="bi bi-person-lines-fill">Tous le personnel</AppMenuItem>
-				<AppMenuItem href="/personnel-present" look="dark" icon="bi bi-person-check-fill">Equipe présente</AppMenuItem>
-			</AppMenu>
-		</template>
-
 		<template v-slot:list>
 			<AppMenu>
 				<AppMenuItem :href="'/element/'+el.id" icon="bi bi-file-earmark" v-for="el in elements" :key="el.id">{{el.name}}</AppMenuItem>
@@ -103,24 +93,6 @@ export default {
 		},
 
 		/**
-		 * Envoie une requête pour lister les éléments et les stocke dans le store
-		 * 
-		 * @param {Object} params Paramètre passés en GET dans l'URL
-		 * @param {String} action 'update' (défaut), 'replace', 'remove'
-		 */
-		listElements(params, action) {
-			action = typeof action === 'undefined' ? 'update' : action;
-			this.$app.listElements(this, params)
-			.then((data) => {
-				this.$store.dispatch('refreshElements', {
-					action,
-					elements: data
-				});
-			})
-			.catch(this.$app.catchError);
-		},
-
-		/**
 		 * Change de structure, vide le store
 		 * 
 		 * @param {Integer} structureId
@@ -128,7 +100,6 @@ export default {
 		switchStructure(structureId) {
 			this.$router.push('/');
 			this.$store.dispatch('switchStructure', structureId);
-			this.listElements();
 		},
 
 		/**

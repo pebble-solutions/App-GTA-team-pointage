@@ -13,10 +13,10 @@
             <label class="fs-3 mb-4">Saisiser votre code pin</label>
             
             <div class="my-4 d-flex justify-content-center">
-                <input type="text" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin1" :style="{'border-success': pinValide, 'border-danger': pinError}">
-                <input type="text" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin2" :style="{'border-success': pinValide, 'border-danger': pinError}">
-                <input type="text" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin3" :style="{'border-success': pinValide, 'border-danger': pinError}">
-                <input type="text" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin4" :style="{'border-success': pinValide, 'border-danger': pinError}">
+                <input type="number" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin1" :style="{'border-success': pinValide, 'border-danger': pinError}">
+                <input type="number" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin2" :style="{'border-success': pinValide, 'border-danger': pinError}">
+                <input type="number" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin3" :style="{'border-success': pinValide, 'border-danger': pinError}">
+                <input type="number" class="pincode-input form-control mx-2 secretNum" v-model="pinCode.pin4" :style="{'border-success': pinValide, 'border-danger': pinError}">
             </div>
         </div>
     </AppModal>
