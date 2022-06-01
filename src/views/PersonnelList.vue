@@ -8,8 +8,8 @@
     <div v-else>
         <h2 class="py-4 text-center">Sélectionnez votre profil</h2>
 
-        <div class="d-flex justify-content-start flex-wrap px-4">
-            <div style="width: 25%;" v-for="personnel in personnelList" :key="'personnel-'+ personnel.id">
+        <div class="row">
+            <div class="col-xs-12 col-md-3" v-for="personnel in personnelList" :key="'personnel-'+ personnel.id">
                 <router-link :to="{name: 'ClockByPin', params: {id: personnel.id}}" custom v-slot="{navigate, href}">
                     <a :href="href" @click="navigate" class="text-decoration-none">
                         <PersonnelCard :data="personnel"/>
