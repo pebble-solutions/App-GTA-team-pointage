@@ -1,5 +1,5 @@
 <template>
-    <div class="card mb-3 mx-3 shadow"
+    <div class="card shadow mb-2"
         :class="{
             'border-success': data.clock_status == 'over',
             'border-warning': data.clock_status == 'open',
