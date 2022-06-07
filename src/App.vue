@@ -106,7 +106,7 @@ export default {
 		 * set le timer a 1min une fois le timer fini , revoi vers la methods homeTimeOut()
 		 */
 		setHomeTimer() {
-			this.homeTimer = setTimeout(this.homeTimeOut, 60000);
+			this.homeTimer = setTimeout(this.homeTimeOut, this.cfg.idle);
 		},
 
 		/**

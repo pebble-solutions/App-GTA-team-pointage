@@ -3,8 +3,10 @@
         <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
+        
         <div class="fs-4">Chargement en cours...</div>
     </div>
+
     <div v-else>
         <h2 class="py-4 text-center">Sélectionnez votre profil</h2>
 
@@ -26,6 +28,8 @@
 import PersonnelCard from '@/components/PersonnelCard.vue'
 
 export default {
+    inheritAttrs: false,
+
     components: {
         PersonnelCard
     },

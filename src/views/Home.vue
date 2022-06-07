@@ -24,12 +24,14 @@
                         </router-link>
                         fin de bouton QR code commenté-->
 
-						<!--<router-link to="/personnel-present" custom v-slot="{navigate, href}">
+						<router-link :to="{name: 'PersonnelPresent'}" custom v-slot="{navigate, href}">
 							<a :href="href" class="btn btn-outline-primary col-3 m-2" @click="navigate">
 								<i class="bi bi-person-check-fill fs-1 d-block"></i>
 								<span class="fs-2">Équipe présente</span>
 							</a>
-						</router-link>-->
+						</router-link>
+
+
 					</div>
 				<!-- </div>
 			</div> -->

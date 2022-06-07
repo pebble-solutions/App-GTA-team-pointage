@@ -54,11 +54,12 @@
 
 <script>
 
-export default {  
+export default {
+    inheritAttrs: false,
 
     props: {
         payload: Object,
-        pin: Number
+        pin: String
     },
 
     data() {

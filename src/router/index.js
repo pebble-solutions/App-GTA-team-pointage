@@ -10,17 +10,7 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home,
-    // children: [
-    //   {
-    //     path: 'pin',
-    //     component: () => import('../views/Pin.vue')
-    //   },
-    //   {
-    //     path: 'qrcode',
-    //     component: () => import('../views/QrCode.vue')
-    //   }
-    // ]
+    component: Home
   },
   {
     path: '/qrcode',
@@ -42,7 +32,22 @@ const routes = [
   {
     path: '/personnel-present',
     name: 'PersonnelPresent',
-    component: PersonnelPresent
+    component: PersonnelPresent,
+    children: [
+      {
+        path: '/infos/:id',
+        name: 'Informations',
+        component: () => import('../views/Informations.vue'),
+        children: [
+
+        ]
+      },
+      {
+        path: '/personnel/pin/:id',
+        name: 'ClockByPinForPresentStaff',
+        component: () => import('../views/CodePin.vue')
+      },
+    ]
   },
   {
     path: '/pointage/:id',
@@ -52,8 +57,16 @@ const routes = [
   {
     path: '/goodbye',
     name: 'Goodbye',
-    component: GoodBye
+    component: GoodBye,
+    // children: [
+    //   {
+    //     path: '/pointage/edit',
+    //     name: 'EditPointage',
+    //     component: () => import('../views/EditPointage.vue')
+    //   },    
+    // ]
   },
+
 
   // {
   //   path: '/about',
