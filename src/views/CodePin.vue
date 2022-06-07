@@ -1,5 +1,5 @@
 <template>
-    <AppModal id="clockByPin" :title="titelModal" :footer="false" @modal-hide="routeToList()">
+    <AppModal id="clockByPin" :title="titelModal" :footer="false" @modal-hide="routeToList()" @modal-show="displayCodePin()">
         <div class="text-center">
             <div v-if="personnel.clock_status=='over'" class="alert alert-warning text-start d-flex align-items-center" role="alert">
                 <i class="bi bi-exclamation-triangle me-3 fs-4"></i>
@@ -108,45 +108,43 @@ export default {
         displayCodePin() {
             let inputs = document.querySelectorAll(".pincode-input");
 
-            inputs.forEach((input, index) => {
-                if (index === 0) {
-                    input.focus();
-                }
+            if (inputs[0]) {
+                inputs[0].focus();
+            }
 
+            inputs.forEach((input, index) => {
                 input.addEventListener("input", () => {
-                    if(this.pinCode.pin1.toString().length > 0 && this.pinCode.pin1.toString().length < 2) {
-                        if(inputs.length -1 == index) {
-                            let pin = '';
-                            
-                            for( let pinNumber in this.pinCode) {
-                                pin += this.pinCode[pinNumber];
+                    if(inputs.length -1 == index) {
+                        input.blur();
+                        let pin = '';
+                        
+                        for( let pinNumber in this.pinCode) {
+                            pin += this.pinCode[pinNumber];
+                        }
+
+                        this.$app.apiPost('structurePersonnel/POST/'+this.personnel.id+'/clockByPin', {
+                            pin
+                        })
+                        .then((data) => {
+                            this.$emit('pin-validate', data);
+                            this.$emit('pin-change', pin);
+                            this.$router.push({name : 'Pointage', params : {id: data.id}});
+                        })
+                        .catch(() => {
+                            let refPinCode = {
+                                pin1: null,
+                                pin2: null,
+                                pin3: null,
+                                pin4: null
                             }
 
-                            this.$app.apiPost('structurePersonnel/POST/'+this.personnel.id+'/clockByPin', {
-                                pin
-                            })
-                            .then((data) => {
-                                this.$emit('pin-validate', data);
-                                this.$emit('pin-change', pin);
-                                this.$router.push({name : 'Pointage', params : {id: data.id}});
-                                this.pinValide = true;
-                            })
-                            .catch(() => {
-                                let refPinCode = {
-                                    pin1: null,
-                                    pin2: null,
-                                    pin3: null,
-                                    pin4: null
-                                }
+                            this.pinError = true;
 
-                                this.pinError = true;
-
-                                this.pinCode = refPinCode;
-                                inputs[0].focus();
-                            });
-                        } else {
-                            input.nextElementSibling.focus();                   
-                        }
+                            this.pinCode = refPinCode;
+                            inputs[0].focus();
+                        });
+                    } else {
+                        inputs[index+1].focus();
                     }
                 });
             });
@@ -154,7 +152,7 @@ export default {
     },
 
     mounted() {
-        this.displayCodePin();
+        //this.displayCodePin();
     }
 }
 </script>
