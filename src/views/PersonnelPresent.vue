@@ -9,7 +9,7 @@
         </div>
         
         <div v-else>
-            <h2 class="py-4 text-center" style="font-size: 4rem;">Personnel présent</h2>
+            <h2 class="py-4 text-center">Personnel présent</h2>
 
             <div class="alert alert-warning text-center" role="alert" v-if="personnelActif.length == 0 && pending.personnel == false">
                 Aucune personne présente!

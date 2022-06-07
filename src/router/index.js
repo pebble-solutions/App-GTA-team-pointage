@@ -35,7 +35,7 @@ const routes = [
     component: PersonnelPresent,
     children: [
       {
-        path: '/infos/:id',
+        path: '/personnel-present/:id',
         name: 'Informations',
         component: () => import('../views/Informations.vue'),
         children: [
@@ -43,7 +43,7 @@ const routes = [
         ]
       },
       {
-        path: '/personnel/pin/:id',
+        path: '/personnel-present/pin/:id',
         name: 'ClockByPinForPresentStaff',
         component: () => import('../views/CodePin.vue')
       },
