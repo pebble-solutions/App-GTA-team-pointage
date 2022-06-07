@@ -1,38 +1,39 @@
 <template>
-	<div class="d-flex flex-column justify-content-around py-4" >
+	<div class="py-4">
 		<div>
-			<h1 class="card-title text-center my-4">{{structure.nom}}</h1>
+			<h1 class="text-center">{{structure.nom}}</h1>
 
 			<!-- <div class="card my-4">
 				<div class="card-body">
 					<h2 class="mb-3 display-6">Gestion de l'équipe</h2> -->
+			<div class="row">
+				<div class="col-xs-12 col-md-6">
+					<router-link :to="{name: 'PersonnelList'}" custom v-slot="{navigate, href}">
+						<a :href="href" class="d-block my-2 btn btn-outline-success" @click="navigate">
+							<i class="bi bi-person-check-fill fs-1 d-block"></i>
+							<span class="fs-3">Arrivée</span>
+						</a>
+					</router-link>
+				</div>
+				<div class="col-xs-12 col-md-6">
 
-					<div class="text-center my-4">
-						<router-link :to="{name: 'PersonnelList'}" custom v-slot="{navigate, href}">
-							<a :href="href" class="btn btn-outline-primary col-3 m-2" @click="navigate">
-								<i class="bi bi-person-lines-fill fs-1 d-block"></i>
-								<span class="fs-2">Pointer</span>
-							</a>
-						</router-link>
+					<!--Bouton QR code commenté pour le moment
+					<router-link to="/qrcode" custom v-slot="{navigate, href}">
+						<a :href="href" class="d-block my-2 btn btn-outline-primary col-2 m-2" @click="navigate">
+							<div><i class="bi bi-qr-code fs-1"></i></div>
+							<div class="fs-2">QR Code</div>
+						</a>
+					</router-link>
+					fin de bouton QR code commenté-->
 
-                        <!--Bouton QR code commenté pour le moment
-                        <router-link to="/qrcode" custom v-slot="{navigate, href}">
-                            <a :href="href" class="btn btn-outline-primary col-2 m-2" @click="navigate">
-                                <div><i class="bi bi-qr-code fs-1"></i></div>
-                                <div class="fs-2">QR Code</div>
-                            </a>
-                        </router-link>
-                        fin de bouton QR code commenté-->
-
-						<router-link :to="{name: 'PersonnelPresent'}" custom v-slot="{navigate, href}">
-							<a :href="href" class="btn btn-outline-primary col-3 m-2" @click="navigate">
-								<i class="bi bi-person-check-fill fs-1 d-block"></i>
-								<span class="fs-2">Équipe présente</span>
-							</a>
-						</router-link>
-
-
-					</div>
+					<router-link :to="{name: 'PersonnelPresent'}" custom v-slot="{navigate, href}">
+						<a :href="href" class="d-block my-2 btn btn-outline-danger" @click="navigate">
+							<i class="bi bi-person-x fs-1 d-block"></i>
+							<span class="fs-3">Départ</span>
+						</a>
+					</router-link>
+				</div>
+			</div>
 				<!-- </div>
 			</div> -->
 		</div>
