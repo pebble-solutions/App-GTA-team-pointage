@@ -97,7 +97,11 @@ export default {
          * Redirige le router vers la vue de liste du personnel
          */
         routeToList() {
-            this.$router.push({name: 'PersonnelList'});
+            if(this.$route.name == "ClockByPinForPresentStaff") {
+                this.$router.push({name: 'PersonnelPresent'});
+            } else {
+                this.$router.push({name: 'PersonnelList'});
+            }
         },
 
         /**
