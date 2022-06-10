@@ -19,7 +19,6 @@
 				<router-view 
 					:cfg="cfg" 
 					:cfg-slots="cfgSlots" 
-					:structure="structure" 
 					@pin-change="pinChange" 
 					:payload="payload" 
 					:pin="pin"
@@ -54,10 +53,6 @@ export default {
 			events: ['touch', 'touchList', 'scroll', 'load', 'click', 'mousemove', 'keypress'],
 			content_height: 0,
 			homeTimer : null,
-			structure: {
-				nom: "Au Comptoir Vénitien",
-				font_family: "Cambria"
-			},
 			pin: null,
 			payload: null
 		}

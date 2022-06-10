@@ -1,7 +1,7 @@
 <template>
 	<div class="py-4">
 		<div>
-			<h1 class="text-center">{{structure.nom}}</h1>
+			<h1 class="text-center" v-if="activeStructure">{{activeStructure.nom_interne}}</h1>
 
 			<!-- <div class="card my-4">
 				<div class="card-body">
@@ -42,8 +42,7 @@
 
 <script>
 
-import {mapState} from 'vuex';
-// import Carousel from '@/components/Carousel.vue';
+import {mapGetters} from 'vuex';
 
 export default {
     name: "Home",
@@ -64,12 +63,8 @@ export default {
         };
     },
 
-	// components: { 
-	// 	Carousel 
-	// },
-
     computed: {
-        ...mapState(["tmpElement"])
+		...mapGetters(['activeStructure'])
     },
 
 	mounted() {
