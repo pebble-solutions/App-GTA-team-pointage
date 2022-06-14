@@ -58,13 +58,13 @@ const routes = [
     path: '/goodbye',
     name: 'Goodbye',
     component: GoodBye,
-    // children: [
-    //   {
-    //     path: '/pointage/edit',
-    //     name: 'EditPointage',
-    //     component: () => import('../views/EditPointage.vue')
-    //   },    
-    // ]
+    children: [
+      {
+        path: '/pointage/edit',
+        name: 'EditPointage',
+        component: () => import('../views/EditPointage.vue')
+      },    
+    ]
   },
 
 

@@ -9,7 +9,7 @@
         "logos": null,
         "backAction": "/",
         "backNavigation": true,
-        "idle" : 60000
+        "idle" : 10060000
     },
     "cfgMenu": {
         "href": null

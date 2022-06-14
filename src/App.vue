@@ -30,6 +30,12 @@
 	
 </template>
 
+<style lang="scss">
+	.summary_badge {
+		background-color: #e3f2fd;
+	} 
+</style>
+
 <script>
 
 import AppWrapper from '@/components/pebble-ui/AppWrapper.vue'

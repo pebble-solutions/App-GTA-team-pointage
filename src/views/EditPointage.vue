@@ -1,43 +1,14 @@
 <template>
-    <AppModal id="editPointage" title="Modifier mon pointage" :close-btn="true" :submit-btn="true" @modal-hide="routeToList()">
-        <form >
-            
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    <div class="d-flex align-items-center justify-content-center">
-                        <h2 class="pe-2 text-center">{{personnel.cache_nom}}</h2>
-                    </div>
-                </li>
-            
-                <li class="list-group-item" >
-                    <div class="d-flex align-items-center" >
-                        <span class="pe-2">Horaires:</span> 
-
-                        <Datepicker v-model="date" :time-picker-component="timePicker" />
-                        <Datepicker v-model="date" :time-picker-component="timePicker" />
-                        <i class="bi bi-chevron-right"></i> 
-                        <Datepicker v-model="tmpPointage.dd" timePicker />
-                        <!-- <span>{{displayTime(personnel.oStructureTempsDeclaration.df)}} </span> -->
-                    </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="d-flex align-items-center">
-                        <span class="pe-2">  {{}} </span>
-                        <span class="badge btn-success ms-auto">  <i class="bi bi-check-lg"></i></span>
-                        <span class="badge btn-danger ms-auto"><i class="bi bi-x-lg"></i></span>
-                    </div>
-                </li>
-            </ul>
-        </form>
+    <AppModal id="editPointage" title="Modifier mon pointage" :close-btn="true" :submit-btn="true" @submit="action()" @modal-hide="routeToList()">
+        <summary-item :edit="true" :personnel="personnel" :pointage="tmpPointage" :gtaDeclarations="tmpGtaDeclarations"></summary-item>
     </AppModal>
 </template>
 
 <script>
 import AppModal from '@/components/pebble-ui/AppModal.vue'
+import SummaryItem from '@/components/SummaryItem.vue';
 
 import { ref } from 'vue';
-import Datepicker from '@vuepic/vue-datepicker'
-import '@vuepic/vue-datepicker/dist/main.css';
 
 export default {
     props: {
@@ -47,17 +18,20 @@ export default {
     data() {
         return {
             tmpPointage: {
-                dd:null,
-                df:null
+                dd_date: null,
+                dd_time: null,
+                df_date: null,
+                df_time: null
             },
-            configdate : false,
+            tmpGtaDeclarations: null
         }
     },
 
     components: {
         AppModal,
-        Datepicker
+        SummaryItem
     },
+
 
     methods: {
         /**
@@ -82,13 +56,34 @@ export default {
         }
     },
 
-    mounted() {
-        this.tmpPointage.dd = ref({
-            hours : 4,
-            minutes : 15
-        })
+    beforeMount() {
+        let dd = new Date(this.personnel.oStructureTempsDeclaration.dd);
+
+        let ddH = dd.getHours() ;
+        let ddM = dd.getMinutes();
+
+        this.tmpPointage.dd_date = ref(dd);
+        this.tmpPointage.dd_time = ref({
+            hours : ddH,
+            minutes : ddM
+        });
+
+        let df = new Date(this.personnel.oStructureTempsDeclaration.df);
+
+        let dfH = df.getHours();
+        let dfM = df.getMinutes();
+
+        this.tmpPointage.df_date = ref(df);
+        this.tmpPointage.df_time = ref({
+            hours: dfH,
+            minutes: dfM
+        });
+
+        console.log(this.personnel.oStructureTempsDeclaration);
+
+        if(this.personnel.oStructureTempsDeclaration.gta_declarations) {
+            this.tmpGtaDeclarations = this.personnel.oStructureTempsDeclaration.gta_declarations
+        }
     }
-
-
 }
 </script>
