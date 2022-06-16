@@ -20,7 +20,7 @@
                             <span class="pe-2">Date de début:</span>
 
                             <div class="d-flex align-items-content">
-                                <Datepicker class="pe-2" v-model="tmpPointage.dd_date" autoApply :enableTimePicker="false" position="left" required/>
+                                <Datepicker class="pe-2" v-model="tmpPointage.dd_date" autoApply :enableTimePicker="false" position="left" :format="frFormat" readonly/>
                                 <Datepicker class="ps-2" v-model="tmpPointage.dd_time" timePicker modeHeight="120" position="right" required>
                                     <template #input-icon>
                                         <i class="bi bi-clock px-2"></i>
@@ -33,8 +33,8 @@
                             <span>Date de fin:</span>
                             
                             <div class="d-flex align-itmes-content">
-                                <Datepicker class="pe-2" v-model="tmpPointage.df_date" autoApply :enableTimePicker="false" required/>
-                                <Datepicker class="ps-2" v-model="tmpPointage.df_time" timePicker modeHeight="120" required>
+                                <Datepicker class="pe-2" v-model="tmpPointage.df_date" autoApply :enableTimePicker="false" position="left" :format="frFormat" required/>
+                                <Datepicker class="ps-2" v-model="tmpPointage.df_time" timePicker modeHeight="120" position="right" required>
                                     <template #input-icon>
                                         <i class="bi bi-clock px-2"></i>
                                     </template>
@@ -47,7 +47,7 @@
             <li class="list-group-item">
                 <div class="d-flex align-items-center py-1" v-for ='question in this.tmpGtaDeclarations' :key ="'question' + question.id">
                     <!-- <span class="pe-2">{{question.public_label}}</span> -->
-                    <span class="pe-2">La question ici ?</span>
+                    <span class="pe-2">{{getGtaLabelFromDeclaration(question)}}</span>
 
                     <div class="btn-group ms-auto">
                         <span class="btn btn-outline-success" :class="{'active': question.qte}" v-if="edit" @click="editQuestionAnswer(question, 'oui')">
@@ -106,16 +106,26 @@ export default {
         /**
          * Calcule l'amplitude entre la date de début et la date de fin 
          */
+       
         amplitude() {
             console.log(this.personnel.oStructureTempsDeclaration.dd);
             let dd = new Date(this.personnel.oStructureTempsDeclaration.dd);
             let df = new Date(this.personnel.oStructureTempsDeclaration.df);
-
-
-            let amplitude = Math.abs(dd - df);
+            console.log(dd.toLocaleDateString("fr"));
+            
+            let amplitude = Math.abs(df - dd);
             console.log(amplitude);
 
-            return amplitude + 'test';
+            let minutes = Math.floor((amplitude / (1000 * 60)) % 60),
+                hours = Math.floor((amplitude / (1000 * 60 * 60)) % 24);
+
+            hours = (hours < 10) ? "0" + hours : hours;
+            minutes = (minutes < 10) ? "0" + minutes : minutes;
+
+            return hours + ":" + minutes;
+
+            
+            
         }
     },
 
@@ -193,7 +203,31 @@ export default {
             } else {
                 question.qte = 0;
             }
-        }
+        },
+
+        /**
+         * retourne le libellé (public_label) d'un gtaCodage en fonction d'une gtaDeclaration.
+         * si public_label est vide alors on return le nom.
+         * 
+         * @param {Object} declaration représentation d'une gtaDeclaration
+         * @returns {String}
+         */
+        getGtaLabelFromDeclaration(declaration){
+            let gtaCodage = this.personnel.oStructureTempsDeclaration.gta_codages.find(e => e.id === declaration.gta__codage_id);
+            let label;
+            if (gtaCodage.public_label){
+                label = gtaCodage.public_label;
+            }
+            else if (gtaCodage.nom){
+                label = gtaCodage.nom;
+            }
+            else {label = 'libellé non défini';}
+
+            //let publicLabel = gtaCodage.find (label => label.nom === 'public_label');
+            //console.log(publicLabel.value);
+            return label;
+            // find retrouver le libellé
+        },
     },
 
     mounted() {
@@ -207,7 +241,24 @@ export default {
         } else {
             this.tmpGtaDeclarations = this.personnel.oStructureTempsDeclaration.gta_declarations
         }
-    }
+
+        this.$emit('mounted');
+    },
+
+     setup() {
+
+        const frFormat = (date) => {
+            const day = date.getDate();
+            const month = date.getMonth() +1;
+            const year = date.getFullYear();
+
+            return `${day}/${month}/${year}`;
+        };
+
+        return {
+            frFormat
+        };
+     }
 }
 
 </script> 

@@ -1,6 +1,6 @@
 <template>
-	<div class="py-4">
-		<div>
+	<div id="workspace-wrapper-home">
+		<div id="workspace-home">
 			<h1 class="text-center" v-if="activeStructure">{{activeStructure.nom_interne}}</h1>
 
 			<!-- <div class="card my-4">
@@ -40,6 +40,7 @@
 	</div>
 </template>
 
+
 <script>
 
 import {mapGetters} from 'vuex';
@@ -67,10 +68,56 @@ export default {
 		...mapGetters(['activeStructure'])
     },
 
+	methods: {
+		/**
+		 * Mesure la taille des éléments présents dans la vue afin de les centrer verticalement.
+		 */
+		resize() {
+			let height = window.innerHeight;
+			let header = document.getElementById('app-header');
+			let headerHeight = 0;
+
+			if (header) {
+				headerHeight = header.offsetHeight;
+			}
+
+			let footer = document.getElementById('app-footer');
+			let footerHeight = 0;
+
+			if (footer) {
+				footerHeight = footer.offsetHeight;
+			}
+
+			let workspaceAvailable = height - headerHeight - footerHeight;
+
+			let workspace = document.getElementById('workspace-home');
+			let workspaceHeight = workspace.offsetHeight;
+
+			let freespace = workspaceAvailable - workspaceHeight;
+			let padding = 0;
+
+			if (freespace > 0) {
+				padding = freespace / 2;
+			}
+
+			let workspaceWrapper = document.getElementById('workspace-wrapper-home');
+			workspaceWrapper.style.paddingTop = padding+'px';
+			workspaceWrapper.style.paddingBottom = padding+'px';
+		}
+	},
+
 	mounted() {
 		this.cfg_slots = this.cfgSlots;
 		this.cfg_slots.menu = false;
+
+		window.addEventListener('resize', this.resize);
+
+		this.resize();
 	},
+
+	beforeUnmount() {
+		window.removeEventListener('resize', this.resize);
+	}
 
 }
 </script>

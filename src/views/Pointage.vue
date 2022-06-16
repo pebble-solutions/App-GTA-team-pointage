@@ -1,53 +1,58 @@
 <template>
-    <div class="text-center py-2" v-if="personnel">
-        <div v-if="personnel.clock_status == 'open'">
-            <i class="bi bi-check-circle-fill text-success" style="font-size: 150px;"></i>
-            <div class="text-success text-center">Votre pointage est ouvert.    </div>
-        </div>
+    <div id="workspace-wrapper-pointage">
+        <div id="workspace-pointage">
+            <div class="text-center py-2" v-if="personnel">
+                <div v-if="personnel.clock_status == 'open'">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 150px;"></i>
+                    <div class="text-success text-center">Votre pointage est ouvert. </div>
+                </div>
 
-        <h1 class="display-3">{{displayDate('date')}}</h1>
+                <h1 class="display-3">{{displayDate('date')}}</h1>
 
-        <div class="fs-2">
-            <span class="fs-2" v-if="personnel.clock_status == 'open'" >Début : </span>
-            <span class="fs-2" v-else>Fin : </span>
-    
-            <strong>{{displayDate('time')}}</strong>
-        </div>
+                <div class="fs-2">
+                    <span class="fs-2" v-if="personnel.clock_status == 'open'" >Début : </span>
+                    <span class="fs-2" v-else>Fin : </span>
+            
+                    <strong>{{displayDate('time')}}</strong>
+                </div>
 
-        <div  v-if="personnel.clock_status == 'over' && personnel.oStructureTempsDeclaration.gta_codages">
-            <div v-for="gtaCodage in personnel.oStructureTempsDeclaration.gta_codages" :key="'gtaCodage-' + gtaCodage.id">
-                <div class="card my-3" v-if="gtaCodage.saisie_personnel === 'OUI'">
-                    <div class="card-body" >
-                        <div class="text-center">
-                            <h2 class="mb-4">{{gtaCodage.public_label}}</h2>
+                <div  v-if="personnel.clock_status == 'over' && personnel.oStructureTempsDeclaration.gta_codages">
+                    <div v-for="gtaCodage in personnel.oStructureTempsDeclaration.gta_codages" :key="'gtaCodage-' + gtaCodage.id">
+                        <div class="card my-3" v-if="gtaCodage.saisie_personnel === 'OUI'">
+                            <div class="card-body" >
+                                <div class="text-center">
+                                    <h2 class="mb-4" v-if="gtaCodage.public_label">{{gtaCodage.public_label}}</h2>
+                                    <h2 class="mb-4" v-else>{{gtaCodage.nom}}</h2>
+                        
+                                    <button type="button" class="btn mx-2 w-25" @click="actionBtnPointage(gtaCodage, true)" :class="btnClass(gtaCodage, 'success')">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
                 
-                            <button type="button" class="btn mx-2 w-25" @click="actionBtnPointage(gtaCodage, true)" :class="btnClass(gtaCodage, 'success')">
-                                <i class="bi bi-check-lg"></i>
-                            </button>
-        
-                            <button type="button" class="btn mx-2 w-25" @click="actionBtnPointage(gtaCodage, false)" :class="btnClass(gtaCodage, 'danger')">
-                                <i class="bi bi-x-lg"></i>
-                            </button>
+                                    <button type="button" class="btn mx-2 w-25" @click="actionBtnPointage(gtaCodage, false)" :class="btnClass(gtaCodage, 'danger')">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div v-if="personnel.clock_status == 'open'" class="mt-5">
+                    <router-link to="/" custom v-slot="{navigate, href}">
+                        <a :href="href" @click="navigate" class="btn btn-outline-secondary">
+                            <i class="bi bi-house pe-2"></i>
+                            Retour
+                        </a>
+                    </router-link>
+                </div>
+
+                <div v-if="personnel.clock_status == 'over'" class="mb-5 p-3 fixed-bottom bg-light">
+                    <button @click.prevent="validateGta()" class="btn btn-primary col-6" :disabled="!formReady || pending.validate">
+                        <span v-if="pending.validate">En cours...</span>
+                        <span v-else>Valider</span>
+                    </button>
+                </div>
             </div>
-        </div>
-
-        <div v-if="personnel.clock_status == 'open'" class="mt-5">
-            <router-link to="/" custom v-slot="{navigate, href}">
-                <a :href="href" @click="navigate" class="btn btn-outline-secondary">
-                    <i class="bi bi-house pe-2"></i>
-                    Retour
-                </a>
-            </router-link>
-        </div>
-
-        <div v-if="personnel.clock_status == 'over'" class="mt-5 mb-4">
-            <button @click.prevent="validateGta()" class="btn btn-primary btn-lg" :disabled="!formReady || pending.validate">
-                <span v-if="pending.validate">En cours...</span>
-                <span v-else>Valider</span>
-            </button>
         </div>
     </div>
 </template>
@@ -88,6 +93,45 @@ export default {
     },
 
     methods: {
+
+        /**
+		 * Mesure la taille des éléments présents dans la vue afin de les centrer verticalement.
+		 */
+		resize() {
+			let height = window.innerHeight;
+			let header = document.getElementById('app-header');
+			let headerHeight = 0;
+
+			if (header) {
+				headerHeight = header.offsetHeight;
+			}
+
+			let footer = document.getElementById('app-footer');
+			let footerHeight = 0;
+
+			if (footer) {
+				footerHeight = footer.offsetHeight;
+			}
+
+			let workspaceAvailable = height - headerHeight - footerHeight;
+
+			let workspace = document.getElementById('workspace-pointage');
+			let workspaceHeight = workspace.offsetHeight;
+            console.log(workspaceHeight);
+
+			let freespace = workspaceAvailable - workspaceHeight;
+			let padding = 0;
+            console.log(freespace);
+
+			if (freespace > 0) {
+				padding = freespace / 2;
+			}
+
+			let workspaceWrapper = document.getElementById('workspace-wrapper-pointage');
+			workspaceWrapper.style.paddingTop = padding+'px';
+			workspaceWrapper.style.paddingBottom = padding+'px';
+		},
+
         /**
          * Met à jour les informations du codage
          * 
@@ -195,5 +239,16 @@ export default {
             .catch(this.$app.catchError);
         }
     },
+
+    mounted() {
+
+		window.addEventListener('resize', this.resize);
+
+		this.resize();
+	},
+
+    beforeUnmount() {
+        window.removeEventListener('resize', this.resize);
+    }
 }
 </script>
