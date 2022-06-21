@@ -8,13 +8,7 @@
 		@auth-change="setLocal_user"
 		@structure-change="switchStructure">
 
-		<template v-slot:list>
-			<AppMenu>
-				<AppMenuItem :href="'/element/'+el.id" icon="bi bi-file-earmark" v-for="el in elements" :key="el.id">{{el.name}}</AppMenuItem>
-			</AppMenu>
-		</template>
-
-		<template v-slot:core>
+		<template v-slot:core v-if="isConnectedUser">
 			<div class="bg-light px-3">
 				<router-view 
 					:cfg="cfg" 
@@ -39,9 +33,6 @@
 <script>
 
 import AppWrapper from '@/components/pebble-ui/AppWrapper.vue'
-import AppMenu from '@/components/pebble-ui/AppMenu.vue'
-import AppMenuItem from '@/components/pebble-ui/AppMenuItem.vue'
-import { mapActions, mapState } from 'vuex'
 
 import CONFIG from "@/config.json"
 
@@ -63,19 +54,6 @@ export default {
 			payload: null
 		}
 	},
-
-	computed: {
-		...mapState(['elements', 'openedElement'])
-	},
-
-	// watch: {
-	// 	pin(val) {
-	// 		if (val) {
-	// 			/** On redirige obligatoirement la route vers l'action de pointage */
-	// 			this.$router.push('/Pointage.vue')
-	// 		}
-	// 	}
-	// },
 
 	methods: {
 		/**
@@ -159,15 +137,11 @@ export default {
 		 */
 		updatePayload(payload) {
 			this.payload = payload;
-		},
-
-		...mapActions(['closeElement'])
+		}
 	},
 
 	components: {
-		AppWrapper,
-		AppMenu,
-		AppMenuItem
+		AppWrapper
 	},
 
 	mounted() {

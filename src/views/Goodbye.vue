@@ -1,5 +1,5 @@
 <template>
-    <div id="workspace-wrapper-goodbye">
+    <div id="workspace-goodbye-wrapper">
         <div id="workspace-goodbye">
             <div class="text-center">
                 <i class="bi bi-check-circle-fill text-success" style="font-size: 60px;"></i>
@@ -7,9 +7,9 @@
                 <p>Vos informations de pointage ont été enregistrées.</p>
             </div>
             <div>
-                <summaryItem :personnel="payload" @mounted="resize()"></summaryItem>
+                <summaryItem :personnel="personnel" @mounted="resize()"></summaryItem>
             </div>
-            <div class="fixed-bottom text-center bg-light p-3 mb-5">
+            <div class="fixed-bottom text-center bg-light p-3 border-top shadow">
                 <router-link to="/" custom v-slot="{navigate, href}">
                     <a :href="href" class="btn btn-primary mx-2" @click="navigate">Terminer</a>
                 </router-link>
@@ -20,7 +20,7 @@
         </div>
     </div>
 
-    <router-view :personnel="personnel"></router-view>
+    <router-view :personnel="personnel" :pin="pin" @std-updated="updatePersonnel"></router-view>
 </template>
 <!--
 <style scoped>
@@ -32,18 +32,20 @@
 
 <script>
 import SummaryItem from '../components/SummaryItem.vue';
+import centerWorkspace from '@/js/center-workspace.js';
 
 export default {
     inheritAttrs: false,
 
     props: {
-        payload: Object
+        payload: Object,
+        pin: String
     },
 
-    computed: {
-        personnel() {
-            return this.payload;
-        },
+    data() {
+        return {
+            personnel: {}
+        }
     },
 
     components: {
@@ -55,50 +57,30 @@ export default {
 		 * Mesure la taille des éléments présents dans la vue afin de les centrer verticalement.
 		 */
 		resize() {
-			let height = window.innerHeight;
-			let header = document.getElementById('app-header');
-			let headerHeight = 0;
+			centerWorkspace('workspace-goodbye');
+		},
 
-			if (header) {
-				headerHeight = header.offsetHeight;
-			}
-
-			let footer = document.getElementById('app-footer');
-			let footerHeight = 0;
-
-			if (footer) {
-				footerHeight = footer.offsetHeight;
-			}
-
-			let workspaceAvailable = height - headerHeight - footerHeight;
-
-			let workspace = document.getElementById('workspace-goodbye');
-			let workspaceHeight = workspace.offsetHeight;
-
-			let freespace = workspaceAvailable - workspaceHeight;
-			let padding = 0;
-
-			if (freespace > 0) {
-				padding = freespace / 2;
-			}
-
-			let workspaceWrapper = document.getElementById('workspace-wrapper-goodbye');
-			workspaceWrapper.style.paddingTop = padding+'px';
-			workspaceWrapper.style.paddingBottom = padding+'px';
-		}
+        /**
+         * Met à jour la veriable du personnel.
+         * @param {Object} personnel Objet contenant l'ensmeble des informations du personnel et de son pointage
+         */
+        updatePersonnel(personnel) {
+            this.personnel = personnel;
+        }
 	},
 
     mounted() {
 		window.addEventListener('resize', this.resize);
-
 		this.resize();
 	},
+
+    beforeMount() {
+        this.updatePersonnel(this.payload);
+    },
 
     updated() {
         this.resize();
     },
-
-    //@mounted="resize()"
 
     beforeUnmount() {
         window.removeEventListener('resize', this.resize);

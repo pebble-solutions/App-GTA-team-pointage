@@ -1,5 +1,5 @@
 <template>
-    <div id="workspace-wrapper-pointage">
+    <div id="workspace-pointage-wrapper">
         <div id="workspace-pointage">
             <div class="text-center py-2" v-if="personnel">
                 <div v-if="personnel.clock_status == 'open'">
@@ -16,7 +16,7 @@
                     <strong>{{displayDate('time')}}</strong>
                 </div>
 
-                <div  v-if="personnel.clock_status == 'over' && personnel.oStructureTempsDeclaration.gta_codages">
+                <div  v-if="personnel.oStructureTempsDeclaration.clock_status == 'over' && personnel.oStructureTempsDeclaration.gta_codages">
                     <div v-for="gtaCodage in personnel.oStructureTempsDeclaration.gta_codages" :key="'gtaCodage-' + gtaCodage.id">
                         <div class="card my-3" v-if="gtaCodage.saisie_personnel === 'OUI'">
                             <div class="card-body" >
@@ -37,16 +37,16 @@
                     </div>
                 </div>
 
-                <div v-if="personnel.clock_status == 'open'" class="mt-5">
+                <div v-if="personnel.oStructureTempsDeclaration.clock_status == 'open'" class="mt-5">
                     <router-link to="/" custom v-slot="{navigate, href}">
-                        <a :href="href" @click="navigate" class="btn btn-outline-secondary">
+                        <a :href="href" @click="navigate" class="btn btn-outline-primary">
                             <i class="bi bi-house pe-2"></i>
                             Retour
                         </a>
                     </router-link>
                 </div>
 
-                <div v-if="personnel.clock_status == 'over'" class="mb-5 p-3 fixed-bottom bg-light">
+                <div v-if="personnel.oStructureTempsDeclaration.clock_status == 'over'" class="p-3 fixed-bottom bg-light shadow border-top">
                     <button @click.prevent="validateGta()" class="btn btn-primary col-6" :disabled="!formReady || pending.validate">
                         <span v-if="pending.validate">En cours...</span>
                         <span v-else>Valider</span>
@@ -58,6 +58,8 @@
 </template>
 
 <script>
+
+import centerWorkspace from '@/js/center-workspace';
 
 export default {
     inheritAttrs: false,
@@ -95,41 +97,10 @@ export default {
     methods: {
 
         /**
-		 * Mesure la taille des éléments présents dans la vue afin de les centrer verticalement.
+		 * Centre verticalement la vue
 		 */
 		resize() {
-			let height = window.innerHeight;
-			let header = document.getElementById('app-header');
-			let headerHeight = 0;
-
-			if (header) {
-				headerHeight = header.offsetHeight;
-			}
-
-			let footer = document.getElementById('app-footer');
-			let footerHeight = 0;
-
-			if (footer) {
-				footerHeight = footer.offsetHeight;
-			}
-
-			let workspaceAvailable = height - headerHeight - footerHeight;
-
-			let workspace = document.getElementById('workspace-pointage');
-			let workspaceHeight = workspace.offsetHeight;
-            console.log(workspaceHeight);
-
-			let freespace = workspaceAvailable - workspaceHeight;
-			let padding = 0;
-            console.log(freespace);
-
-			if (freespace > 0) {
-				padding = freespace / 2;
-			}
-
-			let workspaceWrapper = document.getElementById('workspace-wrapper-pointage');
-			workspaceWrapper.style.paddingTop = padding+'px';
-			workspaceWrapper.style.paddingBottom = padding+'px';
+			centerWorkspace('workspace-pointage');
 		},
 
         /**
@@ -241,11 +212,13 @@ export default {
     },
 
     mounted() {
-
 		window.addEventListener('resize', this.resize);
-
 		this.resize();
 	},
+
+    updated() {
+        this.resize();
+    },
 
     beforeUnmount() {
         window.removeEventListener('resize', this.resize);

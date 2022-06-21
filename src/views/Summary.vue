@@ -31,10 +31,6 @@ export default {
             //verif si les champs on été rempli avant de passer a l'étape suivant 
             return this.$emit('step', options)
         },
-    },
-
-    beforeMount() {
-        console.log(this.pointage);
     }
 }
 

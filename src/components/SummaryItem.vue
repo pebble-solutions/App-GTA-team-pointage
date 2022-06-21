@@ -20,8 +20,8 @@
                             <span class="pe-2">Date de début:</span>
 
                             <div class="d-flex align-items-content">
-                                <Datepicker class="pe-2" v-model="tmpPointage.dd_date" autoApply :enableTimePicker="false" position="left" :format="frFormat" readonly/>
-                                <Datepicker class="ps-2" v-model="tmpPointage.dd_time" timePicker modeHeight="120" position="right" required>
+                                <Datepicker class="pe-2" v-model="tmpPointage.dd_date" autoApply :enableTimePicker="false" position="left" :format="frFormat" readonly />
+                                <Datepicker class="ps-2" v-model="tmpPointage.dd_time" timePicker modeHeight="120" position="right" required @update:model-value="$emit('dd-time-change', tmpPointage.dd_time)">
                                     <template #input-icon>
                                         <i class="bi bi-clock px-2"></i>
                                     </template>
@@ -33,8 +33,8 @@
                             <span>Date de fin:</span>
                             
                             <div class="d-flex align-itmes-content">
-                                <Datepicker class="pe-2" v-model="tmpPointage.df_date" autoApply :enableTimePicker="false" position="left" :format="frFormat" required/>
-                                <Datepicker class="ps-2" v-model="tmpPointage.df_time" timePicker modeHeight="120" position="right" required>
+                                <Datepicker class="pe-2" v-model="tmpPointage.df_date" autoApply :enableTimePicker="false" position="left" :format="frFormat" required @update:model-value="$emit('df-date-change', tmpPointage.df_date)"/>
+                                <Datepicker class="ps-2" v-model="tmpPointage.df_time" timePicker modeHeight="120" position="right" required @update:model-value="$emit('df-time-change', tmpPointage.df_time)">
                                     <template #input-icon>
                                         <i class="bi bi-clock px-2"></i>
                                     </template>
@@ -45,21 +45,21 @@
             </li>
 
             <li class="list-group-item">
-                <div class="d-flex align-items-center py-1" v-for ='question in this.tmpGtaDeclarations' :key ="'question' + question.id">
+                <div class="d-flex align-items-center py-1" v-for='question in this.tmpGtaDeclarations' :key ="'question' + question.id">
                     <!-- <span class="pe-2">{{question.public_label}}</span> -->
                     <span class="pe-2">{{getGtaLabelFromDeclaration(question)}}</span>
 
                     <div class="btn-group ms-auto">
-                        <span class="btn btn-outline-success" :class="{'active': question.qte}" v-if="edit" @click="editQuestionAnswer(question, 'oui')">
+                        <button type="button" class="btn btn-outline-success" :class="{'active': question.qte}" v-if="edit" @click="editQuestionAnswer(question, 1)">
                             <i class="bi bi-check-lg"></i>
-                        </span>
-                        <i class="bi bi-check-lg text-success" v-if="!edit && question.qte == 1"></i>
+                        </button>
+                        <i class="bi bi-check-lg text-success" v-if="!edit && recordedValue(question) == 1"></i>
 
 
-                        <span class="btn btn-outline-danger" :class="{'active': question.qte == 0} " v-if="edit " @click="editQuestionAnswer(question, 'non')">
+                        <button type="button" class="btn btn-outline-danger" :class="{'active': question.qte == 0} " v-if="edit " @click="editQuestionAnswer(question, 0)">
                             <i class="bi bi-x-lg"></i>
-                        </span>
-                        <i class="bi bi-x-lg text-danger" v-if="!edit && question.qte == 0"></i>
+                        </button>
+                        <i class="bi bi-x-lg text-danger" v-if="!edit && recordedValue(question) == 0"></i>
                     </div>
                 </div>
             </li>
@@ -106,15 +106,11 @@ export default {
         /**
          * Calcule l'amplitude entre la date de début et la date de fin 
          */
-       
         amplitude() {
-            console.log(this.personnel.oStructureTempsDeclaration.dd);
             let dd = new Date(this.personnel.oStructureTempsDeclaration.dd);
             let df = new Date(this.personnel.oStructureTempsDeclaration.df);
-            console.log(dd.toLocaleDateString("fr"));
             
             let amplitude = Math.abs(df - dd);
-            console.log(amplitude);
 
             let minutes = Math.floor((amplitude / (1000 * 60)) % 60),
                 hours = Math.floor((amplitude / (1000 * 60 * 60)) % 24);
@@ -122,10 +118,7 @@ export default {
             hours = (hours < 10) ? "0" + hours : hours;
             minutes = (minutes < 10) ? "0" + minutes : minutes;
 
-            return hours + ":" + minutes;
-
-            
-            
+            return hours + ":" + minutes;   
         }
     },
 
@@ -146,22 +139,6 @@ export default {
             }
         },
 
-        // /**
-        //  * Get the Timming (l'heure et minutes) from date
-        //  * @param {Date} date 
-        //  */
-        // displayHour(date) {
-        //     if(date) {
-        //         let dateObj = new Date(date);
-        //         let minutes = dateObj.getMinutes();
-
-        //         if(minutes.toString().length == 1) {
-        //         minutes = '0' + minutes;
-        //         }
-        //         return dateObj.getHours(date) + ':' + minutes;
-        //     }
-        // },
-
         /**
          * Get timming of start and end from date
          * @param {String} periode 
@@ -179,14 +156,7 @@ export default {
                 if(ddDate.toLocaleDateString() < dateObj.toLocaleDateString()) {
                     return dateObj.getHours() + ':' + minutes + ' J+1';
                 }
-            }          
-           
-            // if(periode == "endBreak") {
-            //     let dpdDate = new Date(this.personnel.oStructureTempsDeclaration.dpd);
-            //     if(dpdDate.toLocaleDateString() < dateObj.toLocaleDateString()) {
-            //         return dateObj.getHours() + ':' + minutes + ' J+1';
-            //     }
-            // }          
+            }
 
             return dateObj.getHours() + ':' + minutes;
         },
@@ -197,12 +167,10 @@ export default {
          * @param {Object} question 
          * @param {String} type 
          */
-        editQuestionAnswer(question, type){
-            if(type == "oui") {
-                question.qte = 1;
-            } else {
-                question.qte = 0;
-            }
+        editQuestionAnswer(question, val){
+            question.qte = val;
+
+            this.$emit('gta-declaration-change', question);
         },
 
         /**
@@ -228,10 +196,19 @@ export default {
             return label;
             // find retrouver le libellé
         },
+
+        /**
+         * Retourne la dernière valeur enregistré sur le serveur pour une question donnée
+         * @param {Object} question de type GtaDeclaration
+         * @returns {Mixed}
+         */
+        recordedValue(question) {
+            let gtaDeclaration  = this.personnel.oStructureTempsDeclaration.gta_declarations.find(e => e.id === question.id);
+            return gtaDeclaration.qte;
+        }
     },
 
     mounted() {
-        console.log('pointage',this.pointage)
         if(this.pointage) {
             this.tmpPointage = this.pointage;
         }
@@ -239,7 +216,7 @@ export default {
         if(this.gtaDeclarations) {
             this.tmpGtaDeclarations = this.gtaDeclarations;
         } else {
-            this.tmpGtaDeclarations = this.personnel.oStructureTempsDeclaration.gta_declarations
+            this.tmpGtaDeclarations = this.personnel.oStructureTempsDeclaration.gta_declarations;
         }
 
         this.$emit('mounted');

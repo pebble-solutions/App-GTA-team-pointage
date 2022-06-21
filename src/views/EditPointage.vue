@@ -1,6 +1,17 @@
 <template>
-    <AppModal id="editPointage" title="Modifier mon pointage" :close-btn="true" :submit-btn="true" @submit="action()" @modal-hide="routeToList()">
-        <summary-item :edit="true" :personnel="personnel" :pointage="tmpPointage" :gtaDeclarations="tmpGtaDeclarations"></summary-item>
+    <AppModal id="editPointage" title="Modifier mon pointage" :close-btn="true" :submit-btn="true" @submit="record()" @modal-hide="routeToList()" close-label="Annuler">
+        <summary-item 
+            :edit="true" 
+            :personnel="personnel" 
+            :pointage="tmpPointage" 
+            :gta-declarations="tmpGtaDeclarations"></summary-item>
+
+        <hr>
+
+        <div class="mb-3">
+            <label for="edition_reason" class="form-label">Justifiez</label>
+            <textarea name="reason" id="edition_reason" rows="3" class="form-control" v-model="reason" placeholder="Indiquez les raisons de la modification de la déclaration ici."></textarea>
+        </div>
     </AppModal>
 </template>
 
@@ -9,10 +20,12 @@ import AppModal from '@/components/pebble-ui/AppModal.vue'
 import SummaryItem from '@/components/SummaryItem.vue';
 
 import { ref } from 'vue';
+import '@/js/date.js'
 
 export default {
     props: {
-        personnel: Object
+        personnel: Object,
+        pin: String
     },
 
     data() {
@@ -23,7 +36,8 @@ export default {
                 df_date: null,
                 df_time: null
             },
-            tmpGtaDeclarations: null
+            tmpGtaDeclarations: null,
+            reason: ''
         }
     },
 
@@ -53,6 +67,34 @@ export default {
     
                 return newDate.toLocaleDateString('fr-FR', dateFormat);
             }
+        },
+
+        /**
+         * Enregistrement des modifications
+         */
+        record() {
+            let dd = new Date(this.tmpPointage.dd_date);
+            dd.setHours(this.tmpPointage.dd_time.hours);
+            dd.setMinutes(this.tmpPointage.dd_time.minutes);
+            dd.setSeconds(0);
+
+            let df = new Date(this.tmpPointage.df_date);
+            df.setHours(this.tmpPointage.df_time.hours);
+            df.setMinutes(this.tmpPointage.df_time.minutes);
+            df.setSeconds(0);
+
+            this.$app.apiPost('structurePersonnel/POST/'+this.personnel.id+'/editClockByPin/'+this.personnel.oStructureTempsDeclaration.id, {
+                pin: this.pin, 
+                dd: dd.getSqlDate(true), 
+                df: df.getSqlDate(true), 
+                gta_declarations: JSON.stringify(this.tmpGtaDeclarations),
+                reason: this.reason
+            })
+            .then((data) => {
+                this.$emit('std-updated', data);
+                this.routeToList();
+            })
+            .catch(this.$app.catchError);
         }
     },
 
@@ -79,10 +121,9 @@ export default {
             minutes: dfM
         });
 
-        console.log(this.personnel.oStructureTempsDeclaration);
-
         if(this.personnel.oStructureTempsDeclaration.gta_declarations) {
-            this.tmpGtaDeclarations = this.personnel.oStructureTempsDeclaration.gta_declarations
+
+            this.tmpGtaDeclarations = JSON.parse(JSON.stringify(this.personnel.oStructureTempsDeclaration.gta_declarations));
         }
     }
 }
