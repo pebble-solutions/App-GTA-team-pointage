@@ -10,7 +10,7 @@
                 <h1 class="display-3">{{displayDate('date')}}</h1>
 
                 <div class="fs-2">
-                    <span class="fs-2" v-if="personnel.clock_status == 'open'" >Début : </span>
+                    <span class="fs-2" v-if="personnel.oStructureTempsDeclaration.clock_status == 'open'" >Début : </span>
                     <span class="fs-2" v-else>Fin : </span>
             
                     <strong>{{displayDate('time')}}</strong>
