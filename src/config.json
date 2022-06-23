@@ -21,7 +21,7 @@
         "header": false
     },
     "api": {
-        "baseURL": "http://local.fe.tld/api/",
+        "baseURL": "https://75wwfjl0r.amandine.cloud/api/",
         "elements": "structurePersonnel"
     },
     "firebaseConfig": {

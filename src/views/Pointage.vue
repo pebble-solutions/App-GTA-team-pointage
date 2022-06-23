@@ -2,7 +2,7 @@
     <div id="workspace-pointage-wrapper">
         <div id="workspace-pointage">
             <div class="text-center py-2" v-if="personnel">
-                <div v-if="personnel.clock_status == 'open'">
+                <div v-if="personnel.oStructureTempsDeclaration.clock_status == 'open'">
                     <i class="bi bi-check-circle-fill text-success" style="font-size: 150px;"></i>
                     <div class="text-success text-center">Votre pointage est ouvert. </div>
                 </div>
@@ -160,7 +160,7 @@ export default {
             let dateFormat = {weekday: "long", month: "long", day: "numeric"};
             let timeFormat = {hour: '2-digit', minute: '2-digit'};
             
-            switch (this.personnel.clock_status) {
+            switch (this.personnel.oStructureTempsDeclaration.clock_status) {
                 case 'open':
                     newDate = new Date(this.personnel.oStructureTempsDeclaration.dd);
                     break;
