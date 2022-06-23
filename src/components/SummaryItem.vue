@@ -21,7 +21,7 @@
 
                             <div class="d-flex align-items-content">
                                 <Datepicker class="pe-2" v-model="tmpPointage.dd_date" autoApply :enableTimePicker="false" position="left" :format="frFormat" readonly />
-                                <Datepicker class="ps-2" v-model="tmpPointage.dd_time" timePicker modeHeight="120" position="right" required @update:model-value="$emit('dd-time-change', tmpPointage.dd_time)">
+                                <Datepicker class="ps-2" v-model="tmpPointage.dd_time" timePicker modeHeight="120" position="right" autoApply required @update:model-value="$emit('dd-time-change', tmpPointage.dd_time)">
                                     <template #input-icon>
                                         <i class="bi bi-clock px-2"></i>
                                     </template>
@@ -33,8 +33,8 @@
                             <span>Date de fin:</span>
                             
                             <div class="d-flex align-itmes-content">
-                                <Datepicker class="pe-2" v-model="tmpPointage.df_date" autoApply :enableTimePicker="false" position="left" :format="frFormat" required @update:model-value="$emit('df-date-change', tmpPointage.df_date)"/>
-                                <Datepicker class="ps-2" v-model="tmpPointage.df_time" timePicker modeHeight="120" position="right" required @update:model-value="$emit('df-time-change', tmpPointage.df_time)">
+                                <Datepicker class="pe-2" v-model="tmpPointage.df_date" autoApply :enableTimePicker="false" position="left" :format="frFormat" required @update:model-value="$emit('df-date-change', tmpPointage.df_date)" />
+                                <Datepicker class="ps-2" v-model="tmpPointage.df_time" timePicker modeHeight="120" position="right" autoApply required @update:model-value="$emit('df-time-change', tmpPointage.df_time)">
                                     <template #input-icon>
                                         <i class="bi bi-clock px-2"></i>
                                     </template>
