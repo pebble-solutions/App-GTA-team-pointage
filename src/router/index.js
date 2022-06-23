@@ -22,7 +22,7 @@ const routes = [
   {
     path: '/personnel-present',
     name: 'PersonnelPresent',
-    component: import('../views/PersonnelPresent.vue'),
+    component: () => import('../views/PersonnelPresent.vue'),
     children: [
       {
         path: '/personnel-present/:id',
@@ -42,12 +42,12 @@ const routes = [
   {
     path: '/pointage/:id',
     name: 'Pointage',
-    component: import('../views/Pointage.vue'),
+    component: () => import('../views/Pointage.vue'),
   },
   {
     path: '/goodbye',
     name: 'Goodbye',
-    component: import('../views/Goodbye.vue'),
+    component: () => import('../views/Goodbye.vue'),
     children: [
       {
         path: '/pointage/edit',
