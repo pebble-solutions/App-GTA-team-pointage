@@ -106,18 +106,36 @@ export default {
          * Calcule l'amplitude entre la date de début et la date de fin 
          */
         amplitude() {
+            let diff = {};
+
             let dd = new Date(this.personnel.oStructureTempsDeclaration.dd);
             let df = new Date(this.personnel.oStructureTempsDeclaration.df);
+
+            let amp = df - dd;
+
+            amp = Math.floor(amp/1000);             // Nombre de secondes entre les 2 dates
+            diff.sec = amp % 60;                    // Extraction du nombre de secondes
+
+            amp = Math.floor((amp-diff.sec)/60);    // Nombre de minutes (partie entière)
+            diff.min = amp % 60;                    // Extraction du nombre de minutes
+        
+            amp = Math.floor((amp-diff.min)/60);    // Nombre d'heures (entières)
+            diff.hour = amp % 24;                   // Extraction du nombre d'heures
             
-            let amplitude = Math.abs(df - dd);
+            amp = Math.floor((amp-diff.hour)/24);   // Nombre de jours restants
+            diff.day = amp;
 
-            let minutes = Math.floor((amplitude / (1000 * 60)) % 60),
-                hours = Math.floor((amplitude / (1000 * 60 * 60)) % 24);
+            let hour = diff.hour < 10 ? "0"+diff.hour.toString() : diff.hour.toString();
+            let minute = diff.minute < 10 ? "0"+diff.min.toString() : diff.min.toString();
+            let day = diff.day;
 
-            hours = (hours < 10) ? "0" + hours : hours;
-            minutes = (minutes < 10) ? "0" + minutes : minutes;
+            let res = `${hour}:${minute}`;
+            if (day > 0) {
+                let s = day > 1 ? 's' : '';
+                res = `${day} jour${s} ${res}`;
+            }
 
-            return hours + ":" + minutes;   
+            return res;
         }
     },
 

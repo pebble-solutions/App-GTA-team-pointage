@@ -156,6 +156,8 @@ export default {
 		});
 
 		this.setHomeTimer();
-	},
+
+		this.$router.push({name : 'Home'});
+	}
 }
 </script>

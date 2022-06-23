@@ -104,7 +104,7 @@ export default {
                 let message = this.$app.catchError(error, {
                     mode: 'message'
                 });
-                this.errorMessage = message.replace('Error:', '');
+                alert(message.replace('Error:', ''));
             });
         }
     },
