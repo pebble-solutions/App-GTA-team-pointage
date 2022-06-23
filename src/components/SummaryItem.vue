@@ -1,9 +1,9 @@
 <template>
-    <div class="border-dark border-2 pb-2 my-2" >
+    <div class="border-dark border-2 pb-2" >
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
                 <div class="d-flex align-items-center justify-content-center">
-                    <h2 class="pe-2 text-center">{{displayDay(this.personnel.oStructureTempsDeclaration.dd)}}</h2>
+                    <h2 class="text-center">{{displayDay(this.personnel.oStructureTempsDeclaration.dd)}}</h2>
                 </div>
             </li>
 
@@ -17,7 +17,7 @@
 
                 <div class="pb-2" v-else>
                         <div class="mb-3" v-if="tmpPointage">
-                            <span class="pe-2">Date de début:</span>
+                            <span>Date de début:</span>
 
                             <div class="d-flex align-items-content">
                                 <Datepicker class="pe-2" v-model="tmpPointage.dd_date" autoApply :enableTimePicker="false" position="left" :format="frFormat" readonly />
@@ -46,7 +46,6 @@
 
             <li class="list-group-item">
                 <div class="d-flex align-items-center py-1" v-for='question in this.tmpGtaDeclarations' :key ="'question' + question.id">
-                    <!-- <span class="pe-2">{{question.public_label}}</span> -->
                     <span class="pe-2">{{getGtaLabelFromDeclaration(question)}}</span>
 
                     <div class="btn-group ms-auto">
@@ -66,7 +65,7 @@
         </ul>
     </div>
 </template>
-<style lang="scss" scoped>
+<style lang="scss">
 
 
 .summary_badge {

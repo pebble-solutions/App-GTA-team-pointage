@@ -57,7 +57,9 @@ export default {
 		 * Mesure la taille des éléments présents dans la vue afin de les centrer verticalement.
 		 */
 		resize() {
-			centerWorkspace('workspace-goodbye');
+            this.$nextTick(() => {
+                centerWorkspace('workspace-goodbye');
+            });
 		},
 
         /**

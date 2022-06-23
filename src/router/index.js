@@ -1,10 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import QrCode from '../views/QrCode.vue'
-import PersonnelList from '../views/PersonnelList.vue'
-import PersonnelPresent from '../views/PersonnelPresent.vue'
-import Pointage from '../views/Pointage.vue'
-import GoodBye from '../views/Goodbye.vue'
 
 const routes = [
   {
@@ -13,14 +8,9 @@ const routes = [
     component: Home
   },
   {
-    path: '/qrcode',
-    name: 'QrCode',
-    component: QrCode
-  },
-  {
     path: '/personnel',
     name: 'PersonnelList',
-    component: PersonnelList,
+    component : () => import('../views/PersonnelList.vue'),
     children: [
       {
         path: '/personnel/pin/:id',
@@ -32,7 +22,7 @@ const routes = [
   {
     path: '/personnel-present',
     name: 'PersonnelPresent',
-    component: PersonnelPresent,
+    component: import('../views/PersonnelPresent.vue'),
     children: [
       {
         path: '/personnel-present/:id',
@@ -52,12 +42,12 @@ const routes = [
   {
     path: '/pointage/:id',
     name: 'Pointage',
-    component: Pointage
+    component: import('../views/Pointage.vue'),
   },
   {
     path: '/goodbye',
     name: 'Goodbye',
-    component: GoodBye,
+    component: import('../views/Goodbye.vue'),
     children: [
       {
         path: '/pointage/edit',
@@ -66,31 +56,6 @@ const routes = [
       },    
     ]
   },
-
-
-  // {
-  //   path: '/about',
-  //   name: 'À propos',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  // },
-  // {
-  //   path: '/element/:id',
-  //   name: 'Element',
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/Element.vue'),
-  //   children: [
-  //     {
-  //       path: 'properties',
-  //       component: () => import('../views/ElementProperties.vue')
-  //     },
-  //     {
-  //       path: 'informations',
-  //       component: () => import('../views/ElementInformations.vue')
-  //     }
-  //   ]
-  // }
 ]
 
 const router = createRouter({

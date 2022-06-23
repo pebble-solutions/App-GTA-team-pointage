@@ -1,5 +1,7 @@
 <template>
     <AppModal id="editPointage" title="Modifier mon pointage" :close-btn="true" :submit-btn="true" @submit="record()" @modal-hide="routeToList()" close-label="Annuler">
+        <AlertMessage variant="danger" v-if="errorMessage">{{errorMessage}}</AlertMessage>
+
         <summary-item 
             :edit="true" 
             :personnel="personnel" 
@@ -21,6 +23,7 @@ import SummaryItem from '@/components/SummaryItem.vue';
 
 import { ref } from 'vue';
 import '@/js/date.js'
+import AlertMessage from '../components/pebble-ui/AlertMessage.vue';
 
 export default {
     props: {
@@ -37,14 +40,16 @@ export default {
                 df_time: null
             },
             tmpGtaDeclarations: null,
-            reason: ''
+            reason: '',
+            errorMessage: null
         }
     },
 
     components: {
-        AppModal,
-        SummaryItem
-    },
+    AppModal,
+    SummaryItem,
+    AlertMessage
+},
 
 
     methods: {
@@ -94,7 +99,13 @@ export default {
                 this.$emit('std-updated', data);
                 this.routeToList();
             })
-            .catch(this.$app.catchError);
+            // .catch(this.$app.catchError);
+            .catch((error) => {
+                let message = this.$app.catchError(error, {
+                    mode: 'message'
+                });
+                this.errorMessage = message.replace('Error:', '');
+            });
         }
     },
 
