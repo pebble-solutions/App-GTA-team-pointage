@@ -16,6 +16,7 @@
                     <a :href="href" @click="navigate" class="text-decoration-none">
                         <PersonnelCard :data="personnel"/>
                     </a>
+                    
                 </router-link>
             </div>
         </div>
