@@ -198,7 +198,7 @@ body {
 .velas:before {
     background: rgba(44, 139, 135, 0.4);
     content: "";
-    position: absolute;
+    position: relative;
     width: 100%;
     height: 2.22222222px;
 }

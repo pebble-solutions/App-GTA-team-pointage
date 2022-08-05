@@ -7,9 +7,7 @@
                 <div class="row d-flex justify-content-center">
                 <div class="col-auto text-center m-2 bg-light rounded">
                     <h2 class="text-dark">Bon anniversaire !</h2>
-                    <div v-for="perso in birthday" v-bind:key="'birthday'+perso.id">
-                        <div class="text-dark lead">{{perso.cache_nom}}</div>
-                    </div>
+                    <div class="text-dark lead">{{birthdayString}}</div>
                 </div>
                 </div>
 			</div>	
@@ -62,7 +60,15 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["activeStructure"])
+        ...mapGetters(["activeStructure"]),
+        birthdayString() {
+            let birthdayNames = [];
+            this.birthday.forEach (birthday => {
+                birthdayNames.push (birthday.cache_nom);
+            })
+
+            return birthdayNames.join(', ');
+        }
     },
     methods: {
         /**
