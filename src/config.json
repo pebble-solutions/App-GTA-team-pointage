@@ -1,5 +1,6 @@
 {
-    "name": "Team pointage",
+    "name": "team-pointage",
+    "env": "prod",
     "cfg": {
         "module": "paie",
         "moduleLabel": "Pointage",
@@ -11,6 +12,10 @@
         "backNavigation": true,
         "idle" : 10060000
     },
+    "domains": {
+        "prod": "pebble.solutions",
+        "dev": "localhost"
+    },
     "cfgMenu": {
         "href": null
     },
@@ -21,15 +26,25 @@
         "header": false
     },
     "api": {
-        "baseURL": "https://75wwfjl0r.amandine.cloud/api/",
         "elements": "structurePersonnel"
     },
     "firebaseConfig": {
-        "apiKey": "AIzaSyAm-yEHEBuXt_2frDrNrH2o3mT0Ffj_4v0",
-        "authDomain": "ace-charter-310713.firebaseapp.com",
-        "projectId": "ace-charter-310713",
-        "storageBucket": "ace-charter-310713.appspot.com",
-        "messagingSenderId": "914156232758",
-        "appId": "1:914156232758:web:49a1875d9362027f68f897"
+        "prod": {
+            "apiKey": "AIzaSyAm-yEHEBuXt_2frDrNrH2o3mT0Ffj_4v0",
+            "authDomain": "ace-charter-310713.firebaseapp.com",
+            "databaseURL": "https://ace-charter-310713-default-rtdb.europe-west1.firebasedatabase.app",
+            "projectId": "ace-charter-310713",
+            "storageBucket": "ace-charter-310713.appspot.com",
+            "messagingSenderId": "914156232758",
+            "appId": "1:914156232758:web:49a1875d9362027f68f897"
+        },
+        "dev": {
+            "apiKey": "AIzaSyAzwQE4rI03KgtFYEN2zkXhqUA1-agVQsA",
+            "authDomain": "pebble-test.firebaseapp.com",
+            "projectId": "pebble-test",
+            "storageBucket": "pebble-test.appspot.com",
+            "messagingSenderId": "985626064716",
+            "appId": "1:985626064716:web:beae8e6c8bb714fb97c1e9"
+        }
     }
 }
