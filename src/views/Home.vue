@@ -2,13 +2,11 @@
 	<div id="workspace-home-wrapper">
 		<div id="workspace-home">
 			<h1 class="text-center" v-if="activeStructure">{{activeStructure.nom_interne}}</h1>
-			<div class="card bg-light" v-if="birthday">
-                <birthday></birthday>
-                <div class="row d-flex justify-content-center">
-                <div class="col-auto text-center m-2 bg-light rounded">
+			<div class="position-relative" v-if="birthday.length">
+                <BirthdayCake />
+                <div class="text-center my-2">
                     <h2 class="text-dark">Bon anniversaire !</h2>
                     <div class="text-dark lead">{{birthdayString}}</div>
-                </div>
                 </div>
 			</div>	
 
@@ -40,7 +38,7 @@
 
 import {mapGetters} from 'vuex';
 import centerWorkspace from '@/js/center-workspace.js';
-import Birthday from '../components/birthday.vue';
+import BirthdayCake from '../components/BirthdayCake.vue';
 
 export default {
     name: "Home",
@@ -84,9 +82,6 @@ export default {
             this.$app.apiGet("structurePersonnel/GET/getByBirthday")
             .then(data => {
                 this.birthday = data;
-                
-                
-                console.log(this.birthday);
             })
             .catch(this.$app.catchError);
         }
@@ -104,6 +99,6 @@ export default {
     updated() {
         this.resize();
     },
-    components: { Birthday }
+    components: { BirthdayCake }
 }
 </script>
