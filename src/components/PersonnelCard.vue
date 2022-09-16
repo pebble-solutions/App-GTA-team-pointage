@@ -74,12 +74,17 @@ export default {
          * @return {String}
          */
         displayName(cache_nom) {
-            let nom_prenom = cache_nom.split(' ');
-            
-            let nom = nom_prenom[0];
-            let prenom = nom_prenom[1].charAt(0);
-            
-            let newCache_nom = nom + ' ' + prenom;
+
+            let newCache_nom = 'Sans-nom';
+
+            if (typeof cache_nom === 'string') {
+                let nom_prenom = cache_nom.split(' ');
+                
+                let nom = nom_prenom[0];
+                let prenom = nom_prenom[1].charAt(0);
+                
+                newCache_nom = nom + ' ' + prenom;
+            }
 
             return newCache_nom;
         },
