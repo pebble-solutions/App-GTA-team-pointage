@@ -24,6 +24,7 @@ import SummaryItem from '@/components/SummaryItem.vue';
 import { ref } from 'vue';
 import '@/js/date.js'
 import AlertMessage from '../components/pebble-ui/AlertMessage.vue';
+import sqlDateToIso from '../js/sqlDateToIso';
 
 export default {
     props: {
@@ -110,7 +111,7 @@ export default {
     },
 
     beforeMount() {
-        let dd = new Date(this.personnel.oStructureTempsDeclaration.dd);
+        let dd = new Date(sqlDateToIso(this.personnel.oStructureTempsDeclaration.dd));
 
         let ddH = dd.getHours() ;
         let ddM = dd.getMinutes();
@@ -121,7 +122,7 @@ export default {
             minutes : ddM
         });
 
-        let df = new Date(this.personnel.oStructureTempsDeclaration.df);
+        let df = new Date(sqlDateToIso(this.personnel.oStructureTempsDeclaration.df));
 
         let dfH = df.getHours();
         let dfM = df.getMinutes();

@@ -25,7 +25,8 @@
 
 <script>
 
-import AppModal from '@/components/pebble-ui/AppModal.vue'
+import AppModal from '@/components/pebble-ui/AppModal.vue';
+import sqlDateToIso from '../js/sqlDateToIso';
 
 export default {
     props: {
@@ -63,7 +64,7 @@ export default {
          */
         displayTime(date) {
             if(date) {
-                let newDate = new Date(date);
+                let newDate = new Date(sqlDateToIso(date));
     
                 let dateFormat = {weekday: "short", day:"numeric", hour: '2-digit', minute: '2-digit'};
     

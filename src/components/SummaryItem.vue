@@ -45,7 +45,7 @@
             </li>
 
             <li class="list-group-item">
-                <div class="d-flex align-items-center py-1" v-for='question in this.tmpGtaDeclarations' :key ="'question' + question.id">
+                <div class="d-flex align-items-center py-1" v-for='question in tmpGtaDeclarationsfilter' :key ="'question' + question.id">
                     <span class="pe-2">{{getGtaLabelFromDeclaration(question)}}</span>
 
                     <div class="btn-group ms-auto">
@@ -59,6 +59,8 @@
                             <i class="bi bi-x-lg"></i>
                         </button>
                         <i class="bi bi-x-lg text-danger" v-if="!edit && recordedValue(question) == 0"></i>
+
+                        <span v-if="getTypeValueIntFloat(question)">{{question.qte}}</span>
                     </div>
                 </div>
             </li>
@@ -77,6 +79,7 @@
 <script>
 import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css';
+import sqlDateToIso from '../js/sqlDateToIso';
 
 export default {
 
@@ -103,13 +106,30 @@ export default {
 
     computed: {
         /**
+         * Filtre la variable tmpGtaDeclarations pour ne pas afficher les type de valeur 'int' ou 'float' qui ont une quantité a 0
+         */
+        tmpGtaDeclarationsfilter() {
+            if (this.tmpGtaDeclarations) {
+                let newTmpGtaDeclarations = this.tmpGtaDeclarations.filter(declaration => {
+                    if (this.getTypeValueIntFloat(declaration) && !declaration.qte) {
+                        return;
+                    }
+                
+                    return declaration;
+                })
+                return newTmpGtaDeclarations;
+            }
+            return [];
+        },
+
+        /**
          * Calcule l'amplitude entre la date de début et la date de fin 
          */
         amplitude() {
             let diff = {};
 
-            let dd = new Date(this.personnel.oStructureTempsDeclaration.dd);
-            let df = new Date(this.personnel.oStructureTempsDeclaration.df);
+            let dd = new Date(sqlDateToIso(this.personnel.oStructureTempsDeclaration.dd));
+            let df = new Date(sqlDateToIso(this.personnel.oStructureTempsDeclaration.df));
 
             let amp = df - dd;
 
@@ -161,7 +181,7 @@ export default {
          * @param {String} periode 
          */
         workHours(periode, date) {
-            let dateObj = new Date(date);
+            let dateObj = new Date(sqlDateToIso(date));
             let minutes = dateObj.getMinutes();
 
             if(minutes.toString().length == 1) {
@@ -169,7 +189,7 @@ export default {
             }
            
             if(periode == "end") {
-                let ddDate = new Date(this.personnel.oStructureTempsDeclaration.dd)
+                let ddDate = new Date(sqlDateToIso(this.personnel.oStructureTempsDeclaration.dd))
                 if(ddDate.toLocaleDateString() < dateObj.toLocaleDateString()) {
                     return dateObj.getHours() + ':' + minutes + ' J+1';
                 }
@@ -212,6 +232,23 @@ export default {
             //console.log(publicLabel.value);
             return label;
             // find retrouver le libellé
+        },
+
+        /**
+         * Return true si le type de valeur est int ou float
+         * 
+         * @param {Object} declaration 
+         */
+        getTypeValueIntFloat(declaration) {
+            let gtaCodage = this.personnel.oStructureTempsDeclaration.gta_codages.find(e => e.id === declaration.gta__codage_id);
+
+            if ('int' == gtaCodage.type_value || 'float' == gtaCodage.type_value) {
+                return true;
+            }
+
+
+
+            return false;
         },
 
         /**

@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import sqlDateToIso from '../js/sqlDateToIso';
 
 export default {
     props: {
@@ -96,7 +97,7 @@ export default {
          */
         displayTime(date) {
             if(date) {
-                let newDate = new Date(date);
+                let newDate = new Date(sqlDateToIso(date));
                 let dateNow = new Date();
     
                 let dateFormat = {weekday: "short", day:"numeric", hour: '2-digit', minute: '2-digit'};
