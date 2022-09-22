@@ -18,37 +18,7 @@
 
                 <div  v-if="personnel.oStructureTempsDeclaration.clock_status == 'over' && personnel.oStructureTempsDeclaration.gta_codages">
                     <div v-for="gtaCodage in personnel.oStructureTempsDeclaration.gta_codages" :key="'gtaCodage-' + gtaCodage.id">
-
                         <DeclarationItem :gtaCodage="gtaCodage" :gtaDeclarations="gtaDeclarations" ></DeclarationItem>
-
-
-
-
-<!-- 
-                        <div class="card my-3" v-if="gtaCodage.saisie_personnel === 'OUI'">
-                            <div class="card-body" >
-                                <div class="text-center">
-                                    <h2 class="mb-4" v-if="gtaCodage.public_label">{{gtaCodage.public_label}}</h2>
-                                    <h2 class="mb-4" v-else>{{gtaCodage.nom}}</h2>
-
-                                    <div v-if="'int' == type_value" class="btn-group" role="group">
-                                        <button></button>
-                                        <input type="text">
-                                        <button></button>
-                                    </div>
-                                    
-                                    <div v-else>
-                                        <button type="button" class="btn mx-2 w-25" @click="actionBtnPointage(gtaCodage, true)" :class="btnClass(gtaCodage, 'success')">
-                                            <i class="bi bi-check-lg"></i>
-                                        </button>
-                    
-                                        <button type="button" class="btn mx-2 w-25" @click="actionBtnPointage(gtaCodage, false)" :class="btnClass(gtaCodage, 'danger')">
-                                            <i class="bi bi-x-lg"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
                 </div>
 
@@ -104,8 +74,18 @@ export default {
          * @returns {Boolean}
          */
         formReady() {
-            let codages = this.personnel.oStructureTempsDeclaration.gta_codages.filter(e => e.saisie_personnel === "OUI");
-            let status = codages.length == this.gtaDeclarations.length;
+            let codages = this.personnel.oStructureTempsDeclaration.gta_codages.filter(e => (e.saisie_personnel === "OUI" && !['int', 'float'].includes(e.type_value)));
+
+            let declarations = 0;
+            codages.forEach(codage => {
+                let found = this.gtaDeclarations.find(e => e.gta__codage_id == codage.id);
+
+                if (found) {
+                    declarations += 1;
+                }
+            });
+
+            let status = codages.length == declarations;
             return status;
         }
     },
@@ -117,27 +97,6 @@ export default {
         resize() {
             centerWorkspace("workspace-pointage");
         },
-
-        // /**
-        //  * Met à jour les informations du codage
-        //  *
-        //  * @param {Object} gtaCodage Les informations concernant le codage
-        //  * @param {Number} value La valeur à enregistrer
-        //  */
-        // actionBtnPointage(gtaCodage, value) {
-        //     let declaration;
-        //     let found = this.gtaDeclarations.find(e => e.gta__codage_id == gtaCodage.id);
-        //     if (found) {
-        //         declaration = found;
-        //     }
-        //     else {
-        //         declaration = {
-        //             gta__codage_id: gtaCodage.id
-        //         };
-        //         this.gtaDeclarations.push(declaration);
-        //     }
-        //     declaration.qte = value;
-        // },
 
         /**
          * Retourne la classe à affecter à un bouton en fonction de la valeur d'une déclaration
@@ -206,6 +165,7 @@ export default {
             })
                 .then((data) => {
                 this.$emit("transfer-payload", data);
+                this.gtaDeclarations = [];
                 this.$router.push({ name: "Goodbye" });
             })
                 .catch(this.$app.catchError);
