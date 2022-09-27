@@ -112,7 +112,7 @@ export default {
                 return "btn-outline-" + type;
             }
             else {
-                if ((!declaration.qte && type == "success") || (declaration.qte && type == "danger")) {
+                if ((!declaration.qte && type == "success") || (declaration.qte && type == "danger") || declaration.qte === null || typeof declaration.qte === 'undefined') {
                     return "btn-outline-" + type;
                 }
                 else {
@@ -167,7 +167,7 @@ export default {
             this.declarationPointage.push(declaration);
         }
 
-        declaration.qte = this.qteQuestion;
+        //declaration.qte = this.qteQuestion;
     }
 }
 

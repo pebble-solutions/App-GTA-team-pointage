@@ -78,7 +78,7 @@ export default {
 
             let declarations = 0;
             codages.forEach(codage => {
-                let found = this.gtaDeclarations.find(e => e.gta__codage_id == codage.id);
+                let found = this.gtaDeclarations.find(e => e.gta__codage_id == codage.id && typeof e.qte !== 'undefined');
 
                 if (found) {
                     declarations += 1;
