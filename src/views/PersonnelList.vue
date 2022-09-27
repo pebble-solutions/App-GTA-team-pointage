@@ -77,7 +77,8 @@ export default {
     mounted() {
         this.$app.apiGet('structurePersonnel/GET/list', {
             clock_status: true,
-            active_only: true
+            active_only: true,
+            linked_only: true
         })
         .then((data) => {
             this.personnelList = data;
