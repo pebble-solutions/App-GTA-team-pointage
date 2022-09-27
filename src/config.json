@@ -1,6 +1,6 @@
 {
     "name": "team-pointage",
-    "env": "prod",
+    "env": "dev",
     "cfg": {
         "module": "paie",
         "moduleLabel": "Pointage",
