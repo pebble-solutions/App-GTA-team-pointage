@@ -238,6 +238,8 @@ export default {
          * Return true si le type de valeur est int ou float
          * 
          * @param {Object} declaration 
+         * 
+         * @return {Boolean}
          */
         getTypeValueIntFloat(declaration) {
             let gtaCodage = this.personnel.oStructureTempsDeclaration.gta_codages.find(e => e.id === declaration.gta__codage_id);
@@ -245,8 +247,6 @@ export default {
             if ('int' == gtaCodage.type_value || 'float' == gtaCodage.type_value) {
                 return true;
             }
-
-
 
             return false;
         },
