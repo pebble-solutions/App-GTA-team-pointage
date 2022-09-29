@@ -18,7 +18,7 @@
 
                 <div  v-if="personnel.oStructureTempsDeclaration.clock_status == 'over' && personnel.oStructureTempsDeclaration.gta_codages">
                     <div v-for="gtaCodage in personnel.oStructureTempsDeclaration.gta_codages" :key="'gtaCodage-' + gtaCodage.id">
-                        <DeclarationItem :gtaCodage="gtaCodage" :gtaDeclarations="gtaDeclarations" ></DeclarationItem>
+                        <DeclarationItem :gtaCodage="gtaCodage" :gtaDeclaration="getDeclarationByCodage(gtaCodage)" @qte-change="changeDeclarationQteByCodage($event, gtaCodage)" ></DeclarationItem>
                     </div>
                 </div>
 
@@ -163,18 +163,46 @@ export default {
                 pin: this.pin,
                 gta_declarations: declarations
             })
-                .then((data) => {
+            .then((data) => {
                 this.$emit("transfer-payload", data);
                 this.gtaDeclarations = [];
                 this.$router.push({ name: "Goodbye" });
             })
                 .catch(this.$app.catchError);
+        },
+
+        /**
+         * Retourne les informations d'une déclaration rattachées à un gtaCodage.
+         * 
+         * @param {Object} gtaCodage Les informations du GtaCodage
+         * 
+         * @returns {Object}
+         */
+        getDeclarationByCodage(gtaCodage) {
+            return this.gtaDeclarations.find(e => e.gta__codage_id === gtaCodage.id);
+        },
+
+        /**
+         * Modifie la valeur de la déclaration rattachée à un codage.
+         * 
+         * @param {Number} value Valeur à affecter
+         * @param {Object} gtaCodage GtaCodage sur lequel rattacher la valeur
+         */
+        changeDeclarationQteByCodage(value, gtaCodage) {
+            let declaration = this.getDeclarationByCodage(gtaCodage);
+            declaration.qte = value;
         }
     },
 
     mounted() {
         window.addEventListener("resize", this.resize);
         this.resize();
+
+        this.personnel.oStructureTempsDeclaration.gta_codages.forEach((codage) => {
+            this.gtaDeclarations.push({
+                gta__codage_id: codage.id
+            });
+        })
     },
 
     updated() {

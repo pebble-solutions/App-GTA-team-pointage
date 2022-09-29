@@ -7,31 +7,31 @@
                     <h2 class="mb-4" v-else>{{gtaCodage.nom}}</h2>
     
                     <div v-if="'int' == gtaCodage.type_value || 'float' == gtaCodage.type_value" class="input-group w-50 m-auto" role="group">
-                        <button type="button" class="btn btn-outline-dark" @click="actionClick(-1)">
+                        <button type="button" class="btn btn-outline-dark" @click="incrementValue(-1)">
                             <i class="bi bi-dash-lg">1</i>
                         </button>
 
-                        <button type="button" class="btn btn-outline-dark" @click="actionClick(-0.1)" v-if="'float' == gtaCodage.type_value">
+                        <button type="button" class="btn btn-outline-dark" @click="incrementValue(-0.1)" v-if="'float' == gtaCodage.type_value">
                             <i class="bi bi-dash-lg">0,1</i>
                         </button>
 
-                        <input type="number" class="text-center form-control w-25" :step="'float' == gtaCodage.type_value ? 0.1 : 1" v-model="qteQuestion" />
+                        <input type="number" class="text-center form-control w-25" :step="'float' == gtaCodage.type_value ? 0.1 : 1" v-model="value" />
 
-                        <button type="button" class="btn btn-outline-dark" @click="actionClick(0.1)" v-if="'float' == gtaCodage.type_value">
+                        <button type="button" class="btn btn-outline-dark" @click="incrementValue(0.1)" v-if="'float' == gtaCodage.type_value">
                             <i class="bi bi-plus-lg">0,1</i>
                         </button>
 
-                        <button type="button" class="btn btn-outline-dark" @click="actionClick(1)">
+                        <button type="button" class="btn btn-outline-dark" @click="incrementValue(1)">
                             <i class="bi bi-plus-lg">1</i>
                         </button>
                     </div>
                     
                     <div v-else>
-                        <button type="button" class="btn mx-2 w-25" @click="actionBtnPointage(true)" :class="btnClass('success')">
+                        <button type="button" class="btn mx-2 w-25" @click="setValue(true)" :class="btnClass('success')">
                             <i class="bi bi-check-lg"></i>
                         </button>
     
-                        <button type="button" class="btn mx-2 w-25" @click="actionBtnPointage(false)" :class="btnClass('danger')">
+                        <button type="button" class="btn mx-2 w-25" @click="setValue(false)" :class="btnClass('danger')">
                             <i class="bi bi-x-lg"></i>
                         </button>
                     </div>
@@ -48,54 +48,30 @@
 export default {
     props: {
         gtaCodage: Object,
-        gtaDeclarations: Array,
+        gtaDeclaration: Object,
     },
 
     data() {
         return {
-            qteQuestion: 0,
-            declarationPointage: []
+            value: null
         }
     },
 
+    emits: ['qte-change'],
+
     watch: {
-        qteQuestion(newVal, oldVal) {
-            let declaration;
-            let value;
-
-            if (this.gtaCodage.max_occurence_periode != 0 && newVal > this.gtaCodage.max_occurence_periode || this.qteQuestion < 0) {
-                value = oldVal;
+        /**
+         * Vérifie les contraintes du GtaCodage pour affecter une nouvelle
+         * valeur à la déclaration.
+         * @param {Mixed} newVal Nouvelle valeur à affecter
+         * @param {Mixed} oldVal Ancienne valeur
+         */
+        value(newVal, oldVal) {
+            if (this.gtaCodage.max_occurence_periode != 0 && newVal > this.gtaCodage.max_occurence_periode || this.value < 0) {
+                this.value = oldVal;
             } else {
-                if ('int' == this.gtaCodage.type_value) {
-                    console.log('int');
-                    newVal = Math.round(parseInt(newVal));
-                }
-
-                if ('float' == this.gtaCodage.type_value) {
-                    console.log('float');
-                    newVal = parseFloat(newVal).toFixed(1);
-                }
-
-                console.log(typeof this.qteQuestion);
-                console.log(this.qteQuestion);
-                console.log(newVal);
-
-                value = newVal;
+                this.$emit('qte-change', newVal);
             }
-            
-            let found = this.declarationPointage.find(e => e.gta__codage_id == this.gtaCodage.id);
-
-            if (found) {
-                declaration = found;
-            } else {
-                declaration = {
-                    gta__codage_id: this.gtaCodage.id
-                };
-                this.declarationPointage.push(declaration);
-            }
-
-            declaration.qte = this.qteQuestion;
-            this.qteQuestion = value;
         }
     },
 
@@ -105,14 +81,14 @@ export default {
          * 
          * @param {String} type Le type de bouton
          */
-         btnClass(type) {
-            let declaration = this.declarationPointage.find(e => e.gta__codage_id == this.gtaCodage.id);
+        btnClass(type) {
+            let declaration = this.gtaDeclaration;
 
             if (!declaration) {
                 return "btn-outline-" + type;
             }
             else {
-                if ((!declaration.qte && type == "success") || (declaration.qte && type == "danger") || declaration.qte === null || typeof declaration.qte === 'undefined') {
+                if ((!this.value && type == "success") || (this.value && type == "danger") || this.value === null || typeof this.value === 'undefined') {
                     return "btn-outline-" + type;
                 }
                 else {
@@ -122,52 +98,22 @@ export default {
         },
 
         /**
-         * Met à jour les informations du codage
-         *
-         * @param {Number} value La valeur à enregistrer
+         * Incrémente une valeur à la déclaration
+         * 
+         * @param {Number} value  La valeur a ajouter ou enlever
          */
-         actionBtnPointage(value) {
-            let declaration;
-            let found = this.declarationPointage.find(e => e.gta__codage_id == this.gtaCodage.id);
-            if (found) {
-                declaration = found;
-            }
-            else {
-                declaration = {
-                    gta__codage_id: this.gtaCodage.id
-                };
-                this.declarationPointage.push(declaration);
-            }
-            declaration.qte = value;
+        incrementValue(value) {
+            this.value = parseFloat((value + this.value).toFixed(2));
         },
 
         /**
-         * Action a réaliser sur la variable qteQuestion
+         * Affecte une nouvelle valeur à la déclaration.
          * 
-         * @param {Number} action  La valeur a ajouter ou enlever
+         * @param {Mixed} value Valeur à affecter
          */
-        actionClick(action) {
-            this.qteQuestion += action;
+        setValue(value) {
+            this.value = value;
         }
-    },
-
-    mounted() {
-        this.declarationPointage = this.gtaDeclarations;
-
-        let declaration;
-
-        let found = this.declarationPointage.find(e => e.gta__codage_id == this.gtaCodage.id);
-
-        if (found) {
-            declaration = found;
-        } else {
-            declaration = {
-                gta__codage_id: this.gtaCodage.id
-            };
-            this.declarationPointage.push(declaration);
-        }
-
-        //declaration.qte = this.qteQuestion;
     }
 }
 
