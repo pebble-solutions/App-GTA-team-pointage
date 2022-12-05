@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import PersonnelCard from '@/components/PersonnelCard.vue'
+import PersonnelCard from '@/components/PersonnelCard.vue';
 
 export default {
     inheritAttrs: false,
