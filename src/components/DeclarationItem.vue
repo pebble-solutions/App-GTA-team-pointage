@@ -67,7 +67,7 @@ export default {
          * @param {Mixed} oldVal Ancienne valeur
          */
         value(newVal, oldVal) {
-            if (this.gtaCodage.max_occurence_periode != 0 && newVal > this.gtaCodage.max_occurence_periode || this.value < 0) {
+            if (this.gtaCodage.max_occurence_periode && newVal > this.gtaCodage.max_occurence_periode || this.value < 0) {
                 this.value = oldVal;
             } else {
                 this.$emit('qte-change', newVal);
