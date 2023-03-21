@@ -68,7 +68,7 @@ export default {
          */
         value(newVal, oldVal) {
             if (this.gtaCodage.max_occurence_periode && newVal > this.gtaCodage.max_occurence_periode || this.value < 0) {
-                this.value = oldVal;
+                this.$emit('qte-change', oldVal);
             } else {
                 this.$emit('qte-change', newVal);
             }

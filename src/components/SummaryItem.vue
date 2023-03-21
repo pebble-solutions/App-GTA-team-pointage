@@ -16,32 +16,32 @@
                 </div>
 
                 <div class="pb-2" v-else>
-                        <div class="mb-3" v-if="tmpPointage">
-                            <span>Date de début:</span>
+                    <div class="mb-3" v-if="tmpPointage">
+                        <span>Date de début:</span>
 
-                            <div class="d-flex align-items-content">
-                                <Datepicker class="pe-2" v-model="tmpPointage.dd_date" autoApply :enableTimePicker="false" position="left" :format="frFormat" readonly />
-                                <Datepicker class="ps-2" v-model="tmpPointage.dd_time" timePicker modeHeight="120" position="right" autoApply required @update:model-value="$emit('dd-time-change', tmpPointage.dd_time)">
-                                    <template #input-icon>
-                                        <i class="bi bi-clock px-2"></i>
-                                    </template>
-                                </Datepicker>
-                            </div>
-                        </div>
-                        
-                        <div v-if="tmpPointage">
-                            <span>Date de fin:</span>
-                            
-                            <div class="d-flex align-itmes-content">
-                                <Datepicker class="pe-2" v-model="tmpPointage.df_date" autoApply :enableTimePicker="false" position="left" :format="frFormat" required @update:model-value="$emit('df-date-change', tmpPointage.df_date)" />
-                                <Datepicker class="ps-2" v-model="tmpPointage.df_time" timePicker modeHeight="120" position="right" autoApply required @update:model-value="$emit('df-time-change', tmpPointage.df_time)">
-                                    <template #input-icon>
-                                        <i class="bi bi-clock px-2"></i>
-                                    </template>
-                                </Datepicker>
-                            </div>
+                        <div class="d-flex align-items-content">
+                            <Datepicker class="pe-2" v-model="tmpPointage.dd_date" autoApply :enableTimePicker="false" position="left" :format="frFormat" readonly />
+                            <Datepicker class="ps-2" v-model="tmpPointage.dd_time" timePicker modeHeight="120" position="right" autoApply required @update:model-value="$emit('dd-time-change', tmpPointage.dd_time)">
+                                <template #input-icon>
+                                    <i class="bi bi-clock px-2"></i>
+                                </template>
+                            </Datepicker>
                         </div>
                     </div>
+                    
+                    <div v-if="tmpPointage">
+                        <span>Date de fin:</span>
+                        
+                        <div class="d-flex align-itmes-content">
+                            <Datepicker class="pe-2" v-model="tmpPointage.df_date" autoApply :enableTimePicker="false" position="left" :format="frFormat" required @update:model-value="$emit('df-date-change', tmpPointage.df_date)" />
+                            <Datepicker class="ps-2" v-model="tmpPointage.df_time" timePicker modeHeight="120" position="right" autoApply required @update:model-value="$emit('df-time-change', tmpPointage.df_time)">
+                                <template #input-icon>
+                                    <i class="bi bi-clock px-2"></i>
+                                </template>
+                            </Datepicker>
+                        </div>
+                    </div>
+                </div>
             </li>
 
             <li class="list-group-item">
@@ -49,16 +49,16 @@
                     <span class="pe-2">{{getGtaLabelFromDeclaration(question)}}</span>
 
                     <div class="btn-group ms-auto">
-                        <button type="button" class="btn btn-outline-success" :class="{'active': question.qte}" v-if="edit" @click="editQuestionAnswer(question, 1)">
+                        <button type="button" class="btn btn-outline-success" :class="{'active': question.qte}" v-if="edit && getTypeValueIntFloat(question) == false" @click="editQuestionAnswer(question, 1)">
                             <i class="bi bi-check-lg"></i>
                         </button>
                         <i class="bi bi-check-lg text-success" v-if="!edit && recordedValue(question) == 1"></i>
 
 
-                        <button type="button" class="btn btn-outline-danger" :class="{'active': question.qte == 0} " v-if="edit " @click="editQuestionAnswer(question, 0)">
+                        <button type="button" class="btn btn-outline-danger" :class="{'active': question.qte == 0 || !question.qte} " v-if="edit && getTypeValueIntFloat(question) == false" @click="editQuestionAnswer(question, 0)">
                             <i class="bi bi-x-lg"></i>
                         </button>
-                        <i class="bi bi-x-lg text-danger" v-if="!edit && recordedValue(question) == 0"></i>
+                        <i class="bi bi-x-lg text-danger" v-if="!edit && recordedValue(question) == 0 || !edit && !question.qte"></i>
 
                         <span v-if="getTypeValueIntFloat(question)">{{question.qte}}</span>
                     </div>
@@ -258,6 +258,7 @@ export default {
          */
         recordedValue(question) {
             let gtaDeclaration  = this.personnel.oStructureTempsDeclaration.gta_declarations.find(e => e.id === question.id);
+
             return gtaDeclaration.qte;
         }
     },
