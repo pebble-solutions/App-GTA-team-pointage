@@ -4,7 +4,7 @@
     "cfg": {
         "module": "paie",
         "moduleLabel": "Pointage",
-        "aside": false,
+        "aside": true,
         "app_mode": "default",
         "ppp": "partner",
         "logos": null,
