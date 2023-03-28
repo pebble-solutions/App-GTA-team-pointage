@@ -1,7 +1,7 @@
 <template>
     <AppModal id="clockByPin" :title="titelModal" :footer="false" @modal-hide="routeToList()" @modal-show="displayCodePin()">
         <div class="text-center">
-            <div v-if="personnel.clock_status=='over'" class="alert alert-warning text-start d-flex align-items-center" role="alert">
+            <div v-if="hasClockToday" class="alert alert-warning text-start d-flex align-items-center" role="alert">
                 <i class="bi bi-exclamation-triangle me-3 fs-4"></i>
                 <span class="text-left">Vous avez déjà une période déclarée aujourd'hui, la saisie du code pin déclenchera une nouvelle période de travail.</span>
             </div>
@@ -40,6 +40,7 @@
 <script>
 
 import AppModal from '@/components/pebble-ui/AppModal.vue'
+import sqlDateToIso from '../js/sqlDateToIso';
 
 export default {
     props: {
@@ -82,13 +83,33 @@ export default {
         titelModal() {
             let title = "";
 
-            if(this.personnel.clock_status=="open") {
+            if(this.personnel.clock_status == "open") {
                 title = "Terminer mon pointage";
             } else {
                 title = "Démarrer mon pointage" 
             }
 
             return title;
+        },
+
+        /**
+         * Détermine si il y a eu un pointage sur la journée active.
+         * 
+         * @return {bool}
+         */
+        hasClockToday() {
+            if (!this.personnel.oStructureTempsDeclaration) {
+                return false;
+            }
+
+            const now = new Date();
+            const std_date = new Date(sqlDateToIso(this.personnel.oStructureTempsDeclaration.dd));
+
+            if (now.getDate() === std_date.getDate()) {
+                return true;
+            }
+
+            return false;
         }
     },
 
@@ -153,10 +174,6 @@ export default {
                 });
             });
         }
-    },
-
-    mounted() {
-        //this.displayCodePin();
     }
 }
 </script>
